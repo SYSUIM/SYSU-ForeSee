@@ -1,0 +1,23 @@
+# 生产环境配置文件
+server:
+  port: 8288
+
+spring:
+  redis:
+    host: localhost
+    port: 6479
+    jedis:
+      pool:
+        min-idle: 0
+        max-idle: 100
+
+#eureka配置
+eureka:
+  client:
+    service-url:
+      defaultZone: http://222.200.184.74:8888/eureka/
+
+  instance:
+    instance-id: springcloud-foresee-8288
+    prefer-ip-address: true
+    ip-address: 192.168.1.107

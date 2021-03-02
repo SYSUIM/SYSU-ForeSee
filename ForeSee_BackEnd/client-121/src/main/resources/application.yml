@@ -1,0 +1,5 @@
+spring:
+  profiles:
+    active: prod  # 指定配置文件
+  application:
+    name: springcloud-client

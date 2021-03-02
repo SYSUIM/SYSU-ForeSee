@@ -1,0 +1,7 @@
+nohup: 忽略输入
+成功连接
+/data/prj2020/EnterpriseSpider/Index/index/notice/notice_index_3.txt
+/data/prj2020/EnterpriseSpider/Index/index/notice/notice_index_0.txt
+/data/prj2020/EnterpriseSpider/Index/index/notice/notice_index_2.txt
+/data/prj2020/EnterpriseSpider/Index/index/notice/notice_index_4.txt
+/data/prj2020/EnterpriseSpider/Index/index/notice/notice_index_1.txt

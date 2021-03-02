@@ -1,0 +1,11 @@
+nohup: 忽略输入
+成功连接
+/data/prj2020/EnterpriseSpider/Index/index/news/news_index_13.txt
+/data/prj2020/EnterpriseSpider/Index/index/news/news_index_15.txt
+/data/prj2020/EnterpriseSpider/Index/index/news/news_index_1.txt
+/data/prj2020/EnterpriseSpider/Index/index/news/news_index_36.txt
+/data/prj2020/EnterpriseSpider/Index/index/news/news_index_3.txt
+/data/prj2020/EnterpriseSpider/Index/index/news/news_index_29.txt
+/data/prj2020/EnterpriseSpider/Index/index/news/news_index_21.txt
+/data/prj2020/EnterpriseSpider/Index/index/news/news_index_27.txt
+/data/prj2020/EnterpriseSpider/Index/index/news/news_index_39.txt

@@ -1,0 +1,57 @@
+server:
+  port: 6666
+
+
+spring:
+  profiles:
+    active: prod  # 指定配置文件
+  application:
+    name: springcloud-gateway
+  cloud:
+    gateway:
+      discovery:
+        locator:
+          enabled: true # 开启从服务中心动态创建路由的功能
+      routes:
+        - id: springcloud-foresee1
+          uri: lb://springcloud-foresee
+          predicates:
+            - Path=/companyInfo/**
+            - Method=GET
+
+        - id: springcloud-foresee2
+          uri: lb://springcloud-foresee
+          predicates:
+            - Path=/allNotice/**
+            - Method=GET
+
+        - id: springcloud-foresee3
+          uri: lb://springcloud-foresee
+          predicates:
+            - Path=/allNews/**
+            - Method=GET
+
+        - id: springcloud-foresee4
+          uri: lb://springcloud-foresee
+          predicates:
+            - Path=/allInfo/**
+            - Method=GET
+
+        - id: springcloud-foresee5
+          uri: lb://springcloud-foresee
+          predicates:
+            - Path=/industryInfo/**
+            - Method=GET
+
+
+        - id: springcloud-foresee6
+          uri: lb://springcloud-foresee
+          predicates:
+            - Path=/industryReports/**
+            - Method=GET
+
+        - id: springcloud-foresee7
+          uri: lb://springcloud-foresee
+          predicates:
+            - Path=/industryIndex/**
+            - Method=GET
