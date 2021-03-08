@@ -19,18 +19,18 @@ import java.util.concurrent.Executors;
 /**
  * @author zhongshsh
  * @ClassName RunPython
- * @Description 引用外部python代码
- * @create 2021-03-02
+ * @Description 引用外部python代码，根据TF-IDF得到排序query
  */
 
 @Slf4j
 @Component
 public class RunPython {
+
     //运行forVec.py获取向量
-    private String runPython(String arg){
+    private String runPython(String query, int lineNum){
         String vec = null;
         try {
-            Process pyprocess = Runtime.getRuntime().exec("python /home/user02/suoyin/vec/forVec.py "+arg);  //在单独的进程中执行
+            Process pyprocess = Runtime.getRuntime().exec("python /home/user02/suoyin/vec/forVec.py "+query);  //在单独的进程中执行
             pyprocess.waitFor();  //等待直到pyprocess进程执行完毕
             BufferedReader br = new BufferedReader(new InputStreamReader(pyprocess.getInputStream()));
             br.readLine();  //跳过第一行
@@ -38,7 +38,7 @@ public class RunPython {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return vec.replaceAll(" ","");
+        return vec;
     }
 
     //运行forVec.py获取相似度

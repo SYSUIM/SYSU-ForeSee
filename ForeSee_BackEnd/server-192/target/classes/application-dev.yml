@@ -1,0 +1,32 @@
+# 开发环境配置文件
+server:
+  port: 8287
+
+#spring:
+#  data:
+#    mongodb:
+#      custom:
+#        host: localhost
+#        port: 27017
+#        database: mydb
+#        connections-per-host: 10
+#        min-connections-per-host: 3
+
+spring:
+  redis:
+    host: localhost
+    port: 6479
+    jedis:
+      pool:
+        min-idle: 0
+        max-idle: 10
+
+#eureka配置
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8888/eureka/
+  instance:
+    instance-id: springcloud-foresee-8288
+    prefer-ip-address: true
+    ip-address: 127.0.0.1

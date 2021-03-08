@@ -1,23 +1,32 @@
 # server-192说明
 
-目录结构
+## 模块介绍
+
+本模块主要用于数据访问，处理相关业务，并返回所需数据。
+
+### 模块结构
+
 
 ```
-├─java
-│  └─com
-│      └─ForeSee
-│          └─ForeSee
-│              ├─config          --MongoDB配置
-│              ├─controller      --接收请求并发送给请求数据访问
-│              ├─dao             --数据访问层
-│              │  └─MongoDBDao
-│              ├─service         --所有需求
-│              └─util            --工具类，如MongoDB连接
-└─resources
-    ├─MongoDBDesign  -- MongoDB字段说明、导入语句
-    │  ├─load
-    │  └─structure
-    └─TestData       -- 一些测试数据
+├── java
+│   └── com
+│       └── ForeSee
+│           └── ForeSee
+│               ├── config           --配置
+│               ├── controller       --接受并发送请求
+│               ├── dao              --数据访问层
+│               │   ├── MongoDBDao
+│               │   ├── Neo4jDao
+│               │   └── RedisDao
+│               ├── ServerMain.java
+│               ├── service          --需求类
+│               └── util             --工具类，数据库连接
+└── resources
+    ├── FrontEndData                 --各service返回数据示例
+    ├── MongoDB                      --Mongo数据导入和结构说明
+    ├── Neo4j                        --Neo4j数据导入、查询、索引构建
+    └── Redis                        --Redis数据导入和结构说明
+
 ```
 
 ### 配置说明

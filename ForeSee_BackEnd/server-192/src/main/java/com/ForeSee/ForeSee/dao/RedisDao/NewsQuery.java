@@ -25,7 +25,6 @@ import java.util.concurrent.Executors;
  * @author zhongshsh
  * @ClassName NewsQuery
  * @Description 关于新闻的相关检索
- * @create 2021-03-02
  */
 
 
@@ -36,6 +35,10 @@ public class NewsQuery {
     @Autowired
     JedisUtil jedisUtil;
 
+    //模糊查询
+    @Autowired
+    FuzzySearch fz;
+
     // @Autowired
     JedisUtil_113 jedisUtil_113 = new JedisUtil_113();
     JedisUtil_112 jedisUtil_112 = new JedisUtil_112();
@@ -44,6 +47,29 @@ public class NewsQuery {
     //记录时间，用于测试
     long startTime;
     long finishTime;
+
+    /**
+     * 根据传入的query进行标题模糊匹配，返回newsId列表
+     * @param words
+     * @return newsIdList
+     */
+    public List<String> newsFuzzySearch(String query) {
+        List<String> res = new ArrayList<>();
+        //对检索词串进行切词
+        String queries[] = query.split(" ");
+        int runSize = queries.length;
+        for(int i = 0; i < runSize; i++)
+        {
+            String key = queries[i];
+            try {
+                res.addAll(fz.FuzzySearchList(key, 9));
+            } catch (Exception e){
+                e.printStackTrace();
+            }
+        }
+        List<String> result = new ArrayList<String>(new LinkedHashSet<String>(res)); //去重（顺序不变）
+        return result;  
+    }
 
     /**
      * 根据传入的query，返回newsId列表
@@ -61,51 +87,53 @@ public class NewsQuery {
         {
             String key = queries[i];
             try {
-                Jedis jedis= jedisUtil.getClient();
+                // // 标题模糊匹配
+                // res.addAll(fz.FuzzySearchList(key, 9));
+
+                // 内容匹配
+                Jedis jedis = jedisUtil_113.getClient_113();
                 jedis.select(15);
-                // if(jedis.exists(key)){
-                //     res.addAll(jedis.smembers(key));
-                //     log.info("DB 15: "+key+"; result: "+jedis.smembers(key));
-                // }else{
+                if(jedis.exists(key)){
+                    res.addAll(jedis.smembers(key));
+                    // log.info("DB_113 15: "+key+"; result: "+jedis.smembers(key));
+                }else{
                     jedis.close();
                     jedis = null;
-                    jedis = jedisUtil_113.getClient_113();
+                    jedis = jedisUtil_112.getClient_112();
                     jedis.select(15);
                     if(jedis.exists(key)){
                         res.addAll(jedis.smembers(key));
-                        log.info("DB_113 15: "+key+"; result: "+jedis.smembers(key));
-                    }else{
+                        // log.info("DB_112 15: "+key+"; result: "+jedis.smembers(key));
+                    }
+                    else{
                         jedis.close();
                         jedis = null;
-                        jedis = jedisUtil_112.getClient_112();
+                        jedis = jedisUtil_106.getClient_106();
                         jedis.select(15);
                         if(jedis.exists(key)){
                             res.addAll(jedis.smembers(key));
-                            log.info("DB_112 15: "+key+"; result: "+jedis.smembers(key));
-                        }
-                        else{
-                            jedis.close();
-                            jedis = null;
-                            jedis = jedisUtil_106.getClient_106();
-                            jedis.select(15);
-                            if(jedis.exists(key)){
-                                res.addAll(jedis.smembers(key));
-                                log.info("DB_106 15: "+key+"; result: "+jedis.smembers(key));
-                            }
+                            // log.info("DB_106 15: "+key+"; result: "+jedis.smembers(key));
                         }
                     }
-                // }
-                jedis.close();
-                jedis = null;
+                }
+                // 保底检索策略
+                if (res.size() == 0) {
+                    jedis= jedisUtil.getClient();
+                    jedis.select(15);
+                    if(jedis.exists(key)){
+                        res.addAll(jedis.smembers(key));
+                        log.info("DB 15: "+key+"; result: "+jedis.smembers(key));
+                    }
+                    jedis.close();
+                    jedis = null;
+                }
             } catch (Exception e){
-                System.out.println("Error in RedisDao getNewsIds");
                 e.printStackTrace();
             }
         }
         List<String> result = new ArrayList<String>(new LinkedHashSet<String>(res)); //去重（顺序不变）
         finishTime = System.currentTimeMillis();
         log.info("RedisDao getNewsIds process time:" + (finishTime - startTime));
-//        return result.subList(0,Math.min(10,res.size())); //返回十条
-        return result;  //使用分页查询时使用
+        return result;  
     }
 }

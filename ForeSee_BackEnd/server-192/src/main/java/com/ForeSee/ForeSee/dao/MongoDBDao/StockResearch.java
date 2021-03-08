@@ -51,8 +51,7 @@ public class StockResearch {
                 originDoc.remove("_id");
                 originDoc.remove("stock_code");
                 originDoc.remove("industry_code");
-                sb.append(originDoc.toJson());
-                sb.append(",");
+                sb.append(originDoc.toJson()+",");
             }
             count ++;
         }
@@ -62,7 +61,6 @@ public class StockResearch {
         }
         sb.append("],\"totalRecords\":"+count+"}");
        
-        log.info("has already queried companyResearch from MongoDB based "+stockCode);
         return sb.toString();
     }
 

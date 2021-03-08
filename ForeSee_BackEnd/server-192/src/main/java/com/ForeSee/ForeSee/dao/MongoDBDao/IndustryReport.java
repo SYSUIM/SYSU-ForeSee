@@ -114,7 +114,6 @@ public class IndustryReport {
             sb.deleteCharAt(sb.length() - 1);
         }
         sb.append("]}");
-        log.info("has already queried industryReport from MongoDB based reportIds");
         return sb.toString();
     }
 
@@ -140,17 +139,14 @@ public class IndustryReport {
             if (totalRecords >= bPage && totalRecords < ePage){
                 originDoc.remove("_id");
                 originDoc.remove("industry");
-                sb.append(originDoc.toJson());
-                sb.append(",");
+                sb.append(originDoc.toJson()+",");
             }
             totalRecords ++;
         }
-        cursor.close();
         if (sb.length() > head.length()) {
             sb.deleteCharAt(sb.length() - 1);
         }
         sb.append("],\"totalRecords\":"+totalRecords+"}");
-        log.info("has already queried industryReport from MongoDB based "+industryCode);
 
         return sb.toString();
     }

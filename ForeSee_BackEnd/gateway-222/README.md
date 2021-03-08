@@ -10,15 +10,15 @@
 ├── gateway-222
     ├── src
         ├── main
-            ├── java  -- java源文件
+            ├── java                      -- java源文件
                 ├── com.ForeSee.ForeSee
                     ├── GatewayMain.java  -- 启动类
-            ├── resource  -- 其他文件
-                ├── application.yml  -- 主配置文件，用于指定哪个配置文件
-                ├── application-dev.yml -- 开发环境配置文件
-                ├── application-prod.yml -- 生产环境配置文件
-        ├── test  -- 测试文件
-	├── pom.xml  -- Maven依赖文件
+            ├── resource                  -- 其他文件
+                ├── application.yml       -- 主配置文件，用于指定哪个配置文件
+                ├── application-dev.yml   -- 开发环境配置文件
+                ├── application-prod.yml  -- 生产环境配置文件
+        ├── test                          -- 测试文件
+	├── pom.xml                             -- Maven依赖文件
 ```
 ### 配置说明
 

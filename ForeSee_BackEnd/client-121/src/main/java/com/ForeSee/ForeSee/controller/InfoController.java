@@ -20,6 +20,20 @@ public class InfoController {
     String REST_URL_PREFIX;
 
     /**
+     * 根据关键词检索关系
+     * @param query 关键词
+     * @return
+     */
+    @GetMapping("/relation/{query}")
+    public String getRelationQuery(@PathVariable("query")String query){
+        log.info("Receive getRelationQuery request:" + query);
+        String url = REST_URL_PREFIX + "/relation/" + query;
+        String result = restTemplate.getForObject(url, String.class);
+        log.info("Result: " + result);
+        return result;
+    }
+
+    /**
      * 根据关键词检索行业内容
      * @param query 关键词
      * @return
@@ -38,10 +52,10 @@ public class InfoController {
      * @param query 关键词
      * @return
      */
-    @GetMapping("/companyQuery/{query}")
-    public String getCompanyQuery(@PathVariable("query")String query){
-        log.info("Receive getCompanyInfo request:" + query);
-        String url = REST_URL_PREFIX + "/companyQuery/" + query;
+    @GetMapping("/companyQuery/{query}/{page}")
+    public String getCompanyQuery(@PathVariable("query")String query,@PathVariable("page")String page){
+        log.info("Receive getCompanyInfo request:" + query + " page=" + page);
+        String url = REST_URL_PREFIX + "/companyQuery/" + query + "/" + page;;
         String result = restTemplate.getForObject(url, String.class);
         log.info("Result: " + result);
         return result;

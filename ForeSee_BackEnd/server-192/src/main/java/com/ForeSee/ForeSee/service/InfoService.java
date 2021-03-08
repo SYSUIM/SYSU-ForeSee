@@ -2,18 +2,18 @@ package com.ForeSee.ForeSee.service;
 
 import com.ForeSee.ForeSee.dao.MongoDBDao.*;
 import com.ForeSee.ForeSee.dao.RedisDao.*;
-import com.ForeSee.ForeSee.util.MongoConn;
+import com.ForeSee.ForeSee.util.*;
 import com.mongodb.MongoClient;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.util.List;
+// import org.springframework.data.mongodb.MongoDatabaseFactory;
 
 /**
  * @author zhongshsh
  * @ClassName InfoService
  * @Description 静态数据的获取
- * @create 2021-03-02
  */
 
 @Slf4j
@@ -23,6 +23,8 @@ public class InfoService {
     CompanyQuery companyQ;
     @Autowired
     IndustryQuery industryQ;
+    // @Autowired
+    // MongoUtil mu;
 
     /**
      * 根据公司的代号检索mongodb，查出它的基本信息
@@ -32,10 +34,12 @@ public class InfoService {
       public String getCompanyInfo(String stockCode){
         MongoClient mongoClient=null;
         StringBuffer sb;
+        // MongoDatabaseFactory md = mu.mongoDatabaseFactory();
         try {
             mongoClient = MongoConn.getConn();
             sb = new StringBuffer();
             String companyInfo = CompanyInfo.getCompanyInfo(stockCode, mongoClient);
+            // String companyInfo = CompanyInfo.getCompanyInfo(stockCode, md);
             sb.append(companyInfo);
         }finally {
             mongoClient.close();

@@ -10,10 +10,9 @@ import redis.clients.jedis.JedisPoolConfig;
 
 /**
  * @author Zhongshsh
- * @ClassName JedisUtil
+ * @ClassName JedisUtil_222
  * @Description JedisPool配置以及连接
- * @create 2021-02-23-8:17 下午
- * 通讯框架所在，不启用
+ * 通讯框架所处位置，不启用
  */
 
 

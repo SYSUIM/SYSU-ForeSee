@@ -26,7 +26,6 @@ import java.util.concurrent.Executors;
  * @author zhongshsh
  * @ClassName NoticeQuery
  * @Description 关于公告的相关检索
- * @create 2021-03-02
  */
 
 
@@ -68,7 +67,7 @@ public class NoticeQuery {
             try {
                 if(jedis.exists(key)){
                     res.addAll(jedis.smembers(key));
-                    log.info("DB_105 14: "+key+"; result: "+jedis.smembers(key));
+                    // log.info("DB_105 14: "+key+"; result: "+jedis.smembers(key));
                 }
             } catch (Exception e){
                 System.out.println("Error in RedisDao getNoticeIds");

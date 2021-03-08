@@ -4,11 +4,13 @@ import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoCursor;
 import lombok.extern.slf4j.Slf4j;
 import org.bson.Document;
-import com.alibaba.fastjson.*;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import static com.mongodb.client.model.Filters.eq;
 import static com.mongodb.client.model.Filters.in;
+import java.util.Iterator;
+// import org.springframework.data.mongodb.MongoDatabaseFactory;
 
 @Slf4j
 public class CompanyInfo {
@@ -16,27 +18,32 @@ public class CompanyInfo {
     private static final String tableName="companyInfo";
     private static MongoCollection<Document> collection;
     private static StringBuilder sb;
+    private static int totalRecords;
+    private static int pageSize=6;
 
     /**
      * 使用表companyInfo，返回参数列表中的企业的基本信息，用于一框式检索展示企业简要信息
      * @param stockCodes
      * @return [companyInfo, companyInfo]，详见project/server-192/src/main/resources/FrontEndData/Query/companyInfo.json
      */
-    public static String getCompanyInfo(List<String> stockCodes, MongoClient client) {
-
+    public static String getCompanyInfo(List<String> stockCodes, MongoClient client, String page) {
+        totalRecords = stockCodes.size();
         collection = client.getDatabase("ForeSee").getCollection(tableName);
-        sb = new StringBuilder("[");
-        MongoCursor<Document> cursor = collection.find(in("companyInfo.stock_code", stockCodes)).iterator();
-        while (cursor.hasNext()) {
-            Document originDoc = (Document) cursor.next().get("companyInfo");
-            sb.append(originDoc.toJson());
-            sb.append(",");
+        sb = new StringBuilder("{\"page\":"+page+",\"totalRecords\":"+totalRecords+",\"company\":[");
+        try{
+            stockCodes = stockCodes.subList((Integer.parseInt(page)-1)*pageSize, Integer.parseInt(page)*pageSize);
+        }catch (Exception e){
+            stockCodes = stockCodes.subList((Integer.parseInt(page)-1)*pageSize, totalRecords);
+        }
+        Iterator<String> it = stockCodes.iterator();
+        while (it.hasNext()) {
+            Document originDoc = (Document) collection.find(eq("companyInfo.stock_code", it.next())).first().get("companyInfo");
+            if (originDoc.toJson() != null) sb.append(originDoc.toJson()+",");
         }
         if (sb.length() > 1) {
             sb.deleteCharAt(sb.length() - 1);
         }
-        sb.append("]");
-        log.info("has already queried companyInfo from MongoDB based stockCodes");
+        sb.append("]}");
         return sb.toString();
     }
 
@@ -47,13 +54,13 @@ public class CompanyInfo {
      * @return {}，详见/server-192/src/main/resources/FrontEndData/BasicInfo/companyInfo.json
      */
     public static String getCompanyInfo(String stockCode,MongoClient client) {
-
+        // MongoDatabaseFactory 
         collection = client.getDatabase("ForeSee").getCollection(tableName);
+        // collection = client.getMongoDatabase("ForeSee").getCollection(tableName);
         sb= new StringBuilder();
         Document originDoc = collection.find(in("companyInfo.stock_code", stockCode)).first();
         originDoc.remove("_id");
         sb.append(originDoc.toJson());
-        log.info("has already queried companyInfo from MongoDB based "+stockCode);
         return sb.toString();
     }
 

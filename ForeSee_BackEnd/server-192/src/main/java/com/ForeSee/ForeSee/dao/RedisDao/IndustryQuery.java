@@ -24,7 +24,6 @@ import java.util.concurrent.Executors;
  * @author zhongshsh
  * @ClassName IndustryQuery
  * @Description 关于行业信息的相关检索
- * @create 2021-03-02
  */
 
 @Slf4j
@@ -42,6 +41,7 @@ public class IndustryQuery {
     @Autowired
     FuzzySearch fz;
 
+
     /**
      * 根据传入的industryCode/industryName，返回所有检索字段对应检索结果的industryCode
      * @param industryCode/industryName
@@ -54,7 +54,7 @@ public class IndustryQuery {
         Jedis jedis = jedisUtil.getClient();
         jedis.select(2);
         String industryCode = jedis.get(key);
-        log.info("DB 2: "+key+"; result: "+industryCode);
+        // log.info("DB 2: "+key+"; result: "+industryCode);
         jedis.close();
         jedis = null;
         finishTime = System.currentTimeMillis();
@@ -73,19 +73,18 @@ public class IndustryQuery {
     {
         startTime = System.currentTimeMillis();
         Jedis jedis= jedisUtil.getClient();
-        jedis.select(2);
         List<String> res = new ArrayList<>();
         Iterator<String> queries = stockCodes.iterator();
         if(queries.hasNext())
         {
             String key = queries.next();
+            jedis.select(2);
             try {
-                log.info("DB 2: "+key+"; result: "+jedis.smembers(key));
                 if(jedis.exists(key)){
+                    // smembers方法存疑
                     res.addAll(jedis.smembers(key));
+                    // log.info("DB 2: "+key+"; result: "+jedis.smembers(key));
                 }
-                //模糊匹配
-                res.addAll(fz.FuzzySearchList(key, 2));
                 
             } catch (Exception e){
                 System.out.println("Error in RedisDao getIndustryCodes");
@@ -111,7 +110,6 @@ public class IndustryQuery {
     {
         startTime = System.currentTimeMillis();
         Jedis jedis= jedisUtil.getClient();
-        jedis.select(11);
         List<String> res = new ArrayList<>();
         //对检索词串进行切词
         String queries[] = query.split(" ");
@@ -120,9 +118,16 @@ public class IndustryQuery {
         {
             String key = queries[i];
             try {
+                jedis.select(2);
+                if(jedis.exists(key)){
+                    res.add(jedis.get(key));
+                    // log.info("DB 2: "+key+"; result: "+jedis.get(key));
+                }
+                res.addAll(fz.FuzzySearchList(key, 2));
+                jedis.select(11);
                 if(jedis.exists(key)){
                     res.addAll(jedis.smembers(key));
-                    log.info("DB 11: "+key+"; result: "+jedis.smembers(key));
+                    // log.info("DB 11: "+key+"; result: "+jedis.smembers(key));
                 }
                 
             } catch (Exception e){
@@ -137,6 +142,44 @@ public class IndustryQuery {
         finishTime = System.currentTimeMillis();
         log.info("RedisDao getIndustryCodes process time:" + (finishTime - startTime));
 
+        return result;  
+    }
+
+    /**
+     * 根据传入的query，返回模糊匹配的industryCode列表
+     * @param words
+     * @return industryCodeList
+     */
+    public List<String> industryFuzzySearch(String query)
+    {
+        startTime = System.currentTimeMillis();
+        Jedis jedis= jedisUtil.getClient();
+        List<String> res = new ArrayList<>();
+        //对检索词串进行切词
+        String queries[] = query.split(" ");
+        int runSize = queries.length;
+        for(int i = 0; i < runSize; i++)
+        {
+            String key = queries[i];
+            try {
+                jedis.select(2);
+                if(jedis.exists(key)){
+                    res.add(jedis.get(key));
+                    // log.info("DB 2: "+key+"; result: "+jedis.get(key));
+                }
+                res.addAll(fz.FuzzySearchList(key, 2));
+                
+            } catch (Exception e){
+                System.out.println("Error in RedisDao getIndustryCodes");
+                e.printStackTrace();
+            }
+        
+        }
+        jedis.close();
+        jedis = null;
+        List<String> result = new ArrayList<String>(new LinkedHashSet<String>(res)); //去重（顺序不变）
+        finishTime = System.currentTimeMillis();
+        log.info("RedisDao getIndustryCodes process time:" + (finishTime - startTime));
         return result;  
     }
 

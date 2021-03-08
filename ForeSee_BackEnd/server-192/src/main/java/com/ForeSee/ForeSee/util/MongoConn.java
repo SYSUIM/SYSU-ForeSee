@@ -4,7 +4,14 @@ import com.mongodb.MongoClient;
 import com.mongodb.client.MongoDatabase;
 import lombok.extern.slf4j.Slf4j;
 
+/**
+ * @author Zhongshsh
+ * @ClassName MongoConn
+ * @Description Mongo连接
+ */
+
 @Slf4j
+// @Configuration
 public class MongoConn {
     /**
      * @return Mongodb的连接
@@ -19,5 +26,6 @@ public class MongoConn {
         return mongoClient;
 
     }
+
 
 }

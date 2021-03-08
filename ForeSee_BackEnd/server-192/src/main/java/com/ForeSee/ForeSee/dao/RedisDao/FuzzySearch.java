@@ -23,7 +23,6 @@ import java.util.concurrent.Executors;
  * @author zhongshsh
  * @ClassName FuzzySearch
  * @Description 模糊匹配
- * @create 2021-03-02
  */
 
 @Slf4j
@@ -43,17 +42,17 @@ class FuzzySearch {
         Jedis jedis = jedisUtil.getClient();
         jedis.select(db);
         List<String> keys = FuzzySearchQuery(query, db);
-        log.info("模糊匹配到keys："+keys.toString());
         List<String> list = new ArrayList<>();
         if(keys.size()>0){
             for(String key : keys){
-            list.addAll(jedis.smembers(key));
+                if (db == 2) list.add(jedis.get(key));
+                else list.addAll(jedis.smembers(key));
             }
         }else {
-            log.info("redis没有查到，返回"+list.toString());
+            // log.info("redis没有查到，返回"+list.toString());
             return list;
         }
-        log.info("redis模糊查找:"+query+",返回"+list.toString());
+        // log.info("redis模糊查找:"+query+",返回"+list.toString());
         jedis.close();
         jedis = null;
         return list;
@@ -68,8 +67,7 @@ class FuzzySearch {
         String pattern=query.trim().replaceAll("\\s+","*");
         pattern="*" + pattern + "*";
         List<String>res=jedisScan(pattern, db);
-        log.info("{} 模糊匹配,size:{}",pattern, res.size());
-//        return res.subList(0,Math.min(10,res.size()));
+        // log.info("{} 模糊匹配,size:{}",pattern, res.size());
         return res;
     }
 

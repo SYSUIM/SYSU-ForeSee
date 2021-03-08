@@ -26,7 +26,6 @@ import java.util.concurrent.Executors;
  * @author zhongshsh
  * @ClassName ReportQuery
  * @Description 关于资讯的检索
- * @create 2021-03-02
  */
 
 
@@ -65,7 +64,7 @@ public class ReportQuery {
                 jedis.select(12);
                 if(jedis.exists(key)){
                     res.addAll(jedis.smembers(key));
-                    log.info("DB 12: "+key+"; result: "+jedis.smembers(key));
+                    // log.info("DB 12: "+key+"; result: "+jedis.smembers(key));
                 }
             } catch (Exception e){
                 System.out.println("Error in RedisDao getReportIds");

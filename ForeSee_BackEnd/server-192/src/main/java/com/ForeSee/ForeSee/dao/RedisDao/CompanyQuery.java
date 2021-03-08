@@ -24,7 +24,6 @@ import java.util.concurrent.Executors;
  * @author zhongshsh
  * @ClassName CompanyQuery
  * @Description 关于行业信息的相关检索
- * @create 2021-03-02
  */
 
 @Slf4j
@@ -42,6 +41,41 @@ public class CompanyQuery {
     long startTime;
     long finishTime;
 
+    /**
+     * 根据传入的query进行切词，并标题模糊匹配，返回所有检索字段对应检索结果的stockCode列表
+     * @param query
+     * @return stockList
+     */
+    public List<String> companyFuzzySearch(String query)
+    {
+        startTime = System.currentTimeMillis();
+        //对检索词串进行切词
+        String queries[] = query.split(" ");
+        int runSize = queries.length;
+        List<String> res = new ArrayList<>();
+        Jedis jedis = jedisUtil.getClient();
+        //不适用多线程，因为每个词次序代表了重要性
+        for(int i = 0; i < runSize; i++)
+        {
+            String key = queries[i];
+            try {
+                jedis.select(1);
+                //模糊匹配
+                res.addAll(fz.FuzzySearchList(key, 1));
+            } catch (Exception e){
+                System.out.println("Error in RedisDao getStockCodes");
+                e.printStackTrace();
+            }
+                
+        }
+        jedis.close();
+        jedis = null;
+        List<String> result = new ArrayList<String>(new LinkedHashSet<String>(res)); //去重（顺序不变）
+        finishTime = System.currentTimeMillis();
+        log.info("RedisDao getStockCodes process time:" + (finishTime - startTime));
+
+        return result; 
+    }
     
     /**
      * 根据传入的query进行切词，返回所有检索字段对应检索结果的stockCode列表
@@ -54,53 +88,26 @@ public class CompanyQuery {
         //对检索词串进行切词
         String queries[] = query.split(" ");
         int runSize = queries.length;
-        //指定线程池大小为检索词数目
-        ExecutorService executor = Executors.newFixedThreadPool(runSize);
-        //countDownLatch这个类使一个线程等待其他线程各自执行完毕后再执行
-        final CountDownLatch latch = new CountDownLatch(runSize);
         List<String> res = new ArrayList<>();
-
-        //对每一个检索词用一个线程执行查询
+        Jedis jedis = jedisUtil.getClient();
+        //不适用多线程，因为每个词次序代表了重要性
         for(int i = 0; i < runSize; i++)
         {
             String key = queries[i];
-            executor.execute(new Runnable() {
-                @Override
-                public void run() {
-                    try {
-                        //jedis连接在方法外面获取时，好像不能成功，所以放在了里面，存疑
-                        Jedis jedis = jedisUtil.getClient();
-                        jedis.select(1);
-                        if(jedis.exists(key)){
-                            res.addAll(jedis.smembers(key));
-                            log.info("DB 1: "+key+"; result: "+jedis.smembers(key));
-                        } else {
-                            //模糊匹配
-                            res.addAll(fz.FuzzySearchList(key, 1));
-                            //进行词匹配
-                            jedis.select(13);
-                            if(jedis.exists(key)){
-                                res.addAll(jedis.smembers(key));
-                                log.info("DB 13: "+key+"; result: "+jedis.smembers(key));
-                            }
-                        }
-                        jedis.close();
-                        jedis = null;
-                    } catch (Exception e){
-                        System.out.println("Error in RedisDao getStockCodes");
-                        e.printStackTrace();
-                    }
-                    //计数器-1操作
-                    latch.countDown();
+            try {
+                //进行词匹配
+                jedis.select(13);
+                if(jedis.exists(key)){
+                    res.addAll(jedis.smembers(key));
+                    // log.info("DB 13: "+key+"; result: "+jedis.smembers(key));
                 }
-            });
+                jedis.close();
+                jedis = null;
+            } catch (Exception e){
+                System.out.println("Error in RedisDao getStockCodes");
+                e.printStackTrace();
+            }
         }
-        try {
-            latch.await();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        executor.shutdown();
         List<String> result = new ArrayList<String>(new LinkedHashSet<String>(res)); //去重（顺序不变）
         finishTime = System.currentTimeMillis();
         log.info("RedisDao getStockCodes process time:" + (finishTime - startTime));
@@ -123,11 +130,10 @@ public class CompanyQuery {
             jedis.select(1);
             if(jedis.exists(industryCode)){
                 res.addAll(jedis.smembers(industryCode));
-                log.info("DB 1:  "+industryCode+" ; result: "+jedis.smembers(industryCode));
+                // log.info("DB 1:  "+industryCode+" ; result: "+jedis.smembers(industryCode));
             }
             
         } catch (Exception e){
-            System.out.println("Error in RedisDao getStockCodeBasedIndustry");
             e.printStackTrace();
         }
         jedis.close();

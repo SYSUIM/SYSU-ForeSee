@@ -42,24 +42,26 @@ public class IndustryNews {
     
         collection = client.getDatabase("ForeSee").getCollection(tableName);
         collectionTmp = client.getDatabase("ForeSee").getCollection("companyInfo");
-        while (it.hasNext() && count<pageSize) {
-            count ++;
-            String code = it.next();
-            Document originDoc = collection.find(eq("stock_code", code))
-                                .sort(Sorts.descending("date")).iterator().next();
-            Document companyDoc = collectionTmp.find(eq("companyInfo.stock_code", code)).first();
-            originDoc.remove("_id");
-            originDoc.remove("stock_code");
-            originDoc.put("companyInfo", companyDoc.get("companyInfo"));
-            sb.append(originDoc.toJson());
-            sb.append(",");
+        try {
+            while (it.hasNext() && count<pageSize) {
+                count ++;
+                String code = it.next();
+                Document originDoc = collection.find(eq("stock_code", code))
+                                    .sort(Sorts.descending("date")).first();
+                Document companyDoc = collectionTmp.find(eq("companyInfo.stock_code", code)).first();
+                originDoc.remove("_id");
+                originDoc.remove("stock_code");
+                originDoc.put("companyInfo", companyDoc.get("companyInfo"));
+                sb.append(originDoc.toJson()+",");
+            }
+        }catch (Exception e){
+            
+            e.printStackTrace();
         }
-        
         if (sb.length() > head.length()) {
             sb.deleteCharAt(sb.length() - 1);
         }
         sb.append("]}");
-        log.info("has already queried industryNews from MongoDB");
         return sb.toString();
     }
 

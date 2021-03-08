@@ -133,7 +133,7 @@ public class StockNews {
                 sb.append(",");
             }
         } catch (Exception e){
-            log.info("Something Wrong in getNewsBasedQuery news_id");
+            e.printStackTrace();
         }
         if (sb.length() > head.length()) {
             sb.deleteCharAt(sb.length() - 1);
@@ -165,20 +165,18 @@ public class StockNews {
                 if (totalRecords >= bPage && totalRecords < ePage){
                     originDoc.remove("_id");
                     originDoc.remove("stock_code");
-                    sb.append(originDoc.toJson());
-                    sb.append(",");
+                    sb.append(originDoc.toJson()+",");
                 }
                 totalRecords ++;
             }
-        } finally {
-            cursor.close();
+        } catch (Exception e){
+            e.printStackTrace();
         }
         if (sb.length() > head.length()) {
             sb.deleteCharAt(sb.length() - 1);
         }
         sb.append("],\"totalRecords\":"+totalRecords+"}");
        
-        log.info("has already queried companyNews from MongoDB based "+stockCode);
         return sb.toString().replace("'", "");
     }
 

@@ -40,7 +40,7 @@ public class StockNotice {
      * @return 见/server-192/src/main/resources/FrontEndData/Query/companyNotice.json
      */
     public static String getNoticeBasedStockCodes(List<String> stockCodes, MongoClient client, String page) {
-        totalRecords = 0;
+        totalRecords = stockCodes.size();
         Iterator<String> it = stockCodes.listIterator((Integer.parseInt(page)-1)*pageSize);
         String head="{\"page\": "+page+",\"totalRecords\":"+totalRecords+",\"notice\": [";
         sb = new StringBuilder(head);
@@ -61,13 +61,12 @@ public class StockNotice {
                 totalRecords ++;
             }
         } catch (Exception e){
-            log.info("Something Wrong in getNewsBasedQuery news_id");
+            e.printStackTrace();
         }
         if (sb.length() > head.length()) {
             sb.deleteCharAt(sb.length() - 1);
         }
         sb.append("]}");
-        log.info("has already queried companyNotice from MongoDB based noticeIds");
         return sb.toString().replace("'", "");
     }
 
@@ -108,13 +107,12 @@ public class StockNotice {
                 sb.append(",");
             }
         } catch (Exception e){
-            log.info("Something Wrong in getNoticeBasedQuery noticeIds");
+            e.printStackTrace();
         }
         if (sb.length() > head.length()) {
             sb.deleteCharAt(sb.length() - 1);
         }
         sb.append("]}");
-        log.info("has already queried companyNotice from MongoDB based noticeIds");
         return sb.toString().replace("'", "");
     }
 
@@ -138,20 +136,18 @@ public class StockNotice {
                 if (count >= (p-1)*pageSize && count < p*pageSize){
                     originDoc.remove("_id");
                     originDoc.remove("stock_code");
-                    sb.append(originDoc.toJson());
-                    sb.append(",");
+                    sb.append(originDoc.toJson()+",");
                 }
                 count ++;
             }
-        } finally {
-            cursor.close();
+        }  catch (Exception e){
+            e.printStackTrace();
         }
 
         if (sb.length() > head.length()) {
             sb.deleteCharAt(sb.length() - 1);
         }
         sb.append("],\"totalRecords\":"+count+"}");
-        log.info("has already queried companyNotice from MongoDB based "+stockCode);
         return sb.toString();
     }
 
