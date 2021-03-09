@@ -1,0 +1,77 @@
+{
+	"totalRecords": 1073,
+	"totalCompanies": 268,
+	"IndustryInfo": {
+		"industry": "互联网",
+		"describe": "作为国内领先、以科技驱动的新场景体验营销综合服务提供商，电声股份自成立以来，深耕于体验营销行业，始终秉承成为客户长期战略合作伙伴的价值理念，以虚拟现实、人工智能、大数据采集及运用等前沿创新科技为驱动，持续探索营销领域的创新互动体验产品和智能化产品，并配合与时俱进的创意能力和强大的全国执行网络覆盖能力，围绕消费者构建消费新场景、缔造消费新体验，帮助品牌商实现从营销到销售的闭环，提升品牌价值、拉动产品销量，最终实现促进消费需求升级、推动消费渠道下沉的社会价值。\n电声股份已成功打造了“线下场景体验、消费促进达成、线上数据积累”三位一体的运营模式和覆盖全国、渗透县域的营销场景执行网络。同时，公司为丰田、通用、雀巢、华为等100余家国际知名品牌量身定制并提供了以体验营销为核心，结合零售终端管理、品牌传播等一站式营销服务。",
+		"industry_code": "BK0420"
+	},
+	"lists": [{
+			"company_name": "蓝思科技",
+			"stock_code": "601111",
+			"entLogo": "https:\\/\\/zhengxin-pub.cdn.bcebos.com\\/logopic\\/a1cfdc748c65b9de2c41071894a791c3_fullsize.jpg",
+			"news_title": "5G产业周期带动消费电子回暖，垂直整合促蓝思科技业绩实力大增",
+			"news_time": "2020-10-10",
+			"news_link": "https://finance.sina.com.cn/stock/relnews/cn/2020-10-10/doc-iivhuipp8809470.shtml"
+		},
+		{
+			"company_name": "蓝思科技",
+			"stock_code": "601111",
+			"entLogo": "https:\\/\\/zhengxin-pub.cdn.bcebos.com\\/logopic\\/a1cfdc748c65b9de2c41071894a791c3_fullsize.jpg",
+			"news_title": "A股周一见：十月开门红 A股要迎“银十”行情？好的",
+			"news_time": "2020-10-11",
+			"news_link": "https://finance.sina.com.cn/stock/stocktalk/2020-10-11/doc-iivhvpwz1415299.shtml"
+		},
+		{
+			"company_name": "蓝思科技",
+			"stock_code": "601111",
+			"entLogo": "https:\\/\\/zhengxin-pub.cdn.bcebos.com\\/logopic\\/a1cfdc748c65b9de2c41071894a791c3_fullsize.jpg",
+			"news_title": "A股周一见：十月开门红 A股要迎“银十”行情？",
+			"news_time": "2020-10-11",
+			"news_link": "https://finance.sina.com.cn/stock/stocktalk/2020-10-11/doc-iivhvpwz1415299.shtml"
+		}
+	],
+	"geo": [{
+			"lng": 113.64317,
+			"lat": 28.16378,
+			"company_name": "蓝思科技股份有限公司",
+			"stock_code": "300433"
+		},
+		{
+			"lng": 108.97134,
+			"lat": 34.15875,
+			"company_name": "隆基绿能科技股份有限公司",
+			"stock_code": "601012"
+		},
+		{
+			"lng": 117.10349,
+			"lat": 39.0783,
+			"company_name": "天津中环半导体股份有限公司",
+			"stock_code": "002139"
+		},
+		{
+			"lng": 121.166928,
+			"lat": 30.023798,
+			"company_name": "宁波容百新能源科技股份有限公司",
+			"stock_code": "688005"
+		},
+		{
+			"lng": 116.2862,
+			"lat": 39.82793,
+			"company_name": "北京当升材料科技股份有限公司",
+			"stock_code": "300073"
+		}
+	],
+	"notices": [{
+			"notice_title": "2020年9月主要运营数据公告",
+			"notice_time": "2020-10-13",
+			"link": "http://static.sse.com.cn/disclosure/listedinfo/announcement/c/2020-10-14/600029_20201014_1.pdf"
+		},
+		{
+			"notice_title": "公开发行A股可转换公司债券发行提示性公告",
+			"notice_time": "2020-10-14",
+			"link": "http://static.sse.com.cn/disclosure/listedinfo/announcement/c/2020-10-15/600029_20201015_1.pdf"
+		}
+	]
+
+}

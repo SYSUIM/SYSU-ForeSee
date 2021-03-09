@@ -1,0 +1,43 @@
+@mixin border-radius($radius) {
+  -webkit-border-radius: $radius;
+     -moz-border-radius: $radius;
+      -ms-border-radius: $radius;
+          border-radius: $radius;
+}
+@mixin opacity($value){
+  $IEValue: $value*100;
+  opacity: $value;
+  -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity="+$IEValue+")";
+  filter: alpha(opacity=$IEValue);
+}
+
+@mixin transform-scale($param1, $param2){
+	-webkit-transform: scale($param1, $param2);
+	-moz-transform: scale($param1, $param2);
+	-ms-transform: scale($param1, $param2);
+	-o-transform: scale($param1, $param2);
+	transform: scale($param1, $param2);
+}
+@mixin translateY($value){
+	-webkit-transform: translateY($value);
+	-moz-transform: translateY($value);
+	-ms-transform: translateY($value);
+	-o-transform: translateY($value);
+	transform: translateY($value);
+}
+@mixin transisi($value){
+	-webkit-transition: all $value ease;
+	-moz-transition: all $value ease;
+	-ms-transition: all $value ease;
+	-o-transition: all $value ease;
+	transition: all $value ease;
+}
+
+@mixin clearfix() {
+  &::after {
+    display: block;
+    content: "";
+    clear: both;
+  }
+}
+

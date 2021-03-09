@@ -1,0 +1,9 @@
+[
+    {"query":"玻璃陶瓷","industry":"玻璃陶瓷","industry_code": "BK0546"},
+    {"query":"互联网","industry":"互联网"},
+    {"query":"煤炭采选","industry":"煤炭采选","industry_code": "BK0437"},
+    {"query":"民航机场","industry":"民航机场"},
+    {"query":"高速公路","industry":"高速公路","industry_code": "BK0421"},
+    {"query":"食品饮料","industry":"食品饮料"},
+    {"query":"工艺商品","industry":"工艺商品"}
+]

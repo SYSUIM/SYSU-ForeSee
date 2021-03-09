@@ -1,0 +1,71 @@
+@import url('https://fonts.googleapis.com/css2?family=Open+Sans&family=Ubuntu:wght@400;700&display=swap');
+
+$font-primary : 'Open Sans', sans-serif;
+$font-secondary : 'Ubuntu', sans-serif;
+$font-tertiary : '', sans-serif;
+$font-heading : $font-secondary;
+$font-icon: 'Font Awesome 5 Free';
+$font-sas: 'sas-webfont';
+
+
+$black: #000000;
+$white: #ffffff;
+
+// Global
+$color-body: #4D4D4D;
+$color-primary: #FFD808;
+$color-secondary: #000;
+$color-tertiary: transparent;
+$color-quaternary: transparent;
+$body-bg: #fff;
+$font-body: $font-primary;
+$content-padding: 100px;
+
+/* -------------------- 
+TOPBAR SETTING
+-----------------------*/
+$topbar-bg: $color-secondary;
+$topbar-color: $white;
+$topbar-nav-color: $white;
+$topbar-nav-hover-color: $color-primary;
+$topbar-font: $font-primary;
+
+/* -------------------- 
+NAVBAR SETTING
+-----------------------*/
+$navbar-bg: $color-secondary;
+$navbar-font: $font-secondary;
+$navbar-color: $white;
+$navbar-hover-color: $color-primary;
+$navbar-active-color: $color-primary;
+$navbar-stiky-color: $white;
+$navbar-stiky-hover-color: $color-primary;
+
+/* -------------------- 
+FOOTER SETTING
+-----------------------*/
+$footer-bg: black;
+$footer-bg-copyright: rgba($color-body,.1);
+$footer-font-color: $white;
+
+/* -------------------- 
+BUTTON SETTING
+-----------------------*/
+$btn-primary-hover: $color-secondary;
+
+
+// Background
+$bg__topbar: $color-primary;
+
+.bolder{
+	font-weight: 600;
+}
+
+.cfix{
+	content: '';
+	display: block;
+	width: 100%;
+	clear: both;
+}
+
+@import "mixin.scss";

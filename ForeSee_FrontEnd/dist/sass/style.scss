@@ -1,0 +1,114 @@
+/*
+Template Name: Subsco - Construction HTML Template
+Template URI: http://rudhisasmito/demo/subsco
+Author: Rudhi Sasmito
+Author URI: https://themeforest.net/user/rudhisasmito
+Version: 1.0
+*/
+
+/**
+ * Table of Contents:
+ *
+ * 1. - NORMALIZE CSS
+ * 2. - GLOBAL STYLES
+ *      2.1 - General Styles
+ *      2.2 - Text Color
+ *      2.3 - Anchor
+ *      2.4 - Heading and Paragraph
+ * 
+ * 3. - COMPONENTS
+ *      3.1 - Preloader  
+ *      3.2 - Buttons  
+ *      3.3 - Box Icon 1
+ *      3.4 - Box Icon 2
+ *      3.5 - Box Image 1
+ *      3.6 - Box Image 2
+ *      3.7 - Box Image 3
+ *      3.8 - BOX TESTIMONY
+ *      3.9 - Box Team 2
+ *      3.10 - Box Statistic
+ *      3.11 - Box History
+ *      3.12 - Box Partners
+ *      3.13 - Panel Accordion
+ *      3.14 - Faq
+ *      3.15 - Pricing Table
+ *      3.16 - Career Tabs
+ *      3.17 - Box News
+ * 4. - LOGO & NAVIGATION
+ *      4.1 - Topbar 
+ *      4.2 - Navbar 
+ * 5. - HOME
+ *      5.1 - Banner
+ *      5.2 - Text Typing
+ * 6. - SECTION
+ *      6.1 Section - About
+ *      6.2 Section - Services
+ *      6.3 Section - Projects
+ *      6.4 Section - News
+ *      6.5 Section - Contact
+ *      6.6 Section - Features
+ *      6.7 Section - CTA
+ *      6.8 Section - Price
+ *      6.9 Section - Blog
+ *      6.10 Section - Timeline
+ *      6.11 Section - Testimonial
+ *      6.12 Section - Clients
+ *      6.13 Section - Video BG
+ *      6.14 Section - Contact and Map
+ * 7. - FOOTER 
+ * 8. - RESPONSIVE
+ * -----------------------------------------------------------------------------
+ */
+
+
+@import "custom-icon-font.scss";
+
+@import "variable.scss";
+
+/**
+ * 1. - NORMALIZE CSS
+ * -----------------------------------------------------------------------------
+ */
+@import "normalize.scss";
+
+/**
+ * 2. GLOBAL STYLES
+ * -----------------------------------------------------------------------------
+ */
+@import "global.scss";
+
+/**
+ * 3. - COMPONENTS
+ * -----------------------------------------------------------------------------
+ */
+@import "components.scss";
+
+/**
+ * 4. - LOGO & NAVIGATION
+ * -----------------------------------------------------------------------------
+ */
+@import "logo-nav.scss";
+
+/**
+ * 5. - SECTION
+ * -----------------------------------------------------------------------------
+ */
+@import "section.scss";
+
+/**
+ * 6. - FOOTER
+ * -----------------------------------------------------------------------------
+ */
+@import "footer.scss";
+
+/**
+ * 7. - RESPONSIVE
+ * -----------------------------------------------------------------------------
+ */
+@import "responsive.scss";
+
+
+
+
+
+
