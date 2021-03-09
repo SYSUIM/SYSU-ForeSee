@@ -1,8 +1,0 @@
-# 开发环境配置文件
-server:
-  port: 8288
-  servlet:
-    context-path: /ForeSee
-
-http:
-  REST_URL_PREFIX: http://127.0.0.1:6666
