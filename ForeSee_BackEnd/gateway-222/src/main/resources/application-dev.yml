@@ -1,8 +1,0 @@
-eureka:
-  client:
-    service-url:
-      defaultZone: http://localhost:8888/eureka/
-  instance:
-    instance-id: springcloud-gateway-6666
-    prefer-ip-address: true
-    ip-address: 127.0.0.1
