@@ -29,7 +29,7 @@ public class VectorInfo {
         while (it.hasNext()) {
             String code = it.next();
             Document originDoc = collection.find(eq("id", code)).first();
-            if (originDoc.toJson() != null) sb.append((String) originDoc.get("vector")+",");
+            if (originDoc.toJson() != null) sb.append((String) originDoc.get("vector").toString()+",");
         }
         if (sb.length() > 1) {
             // 存疑，多线程访问时爆数组越界
@@ -85,7 +85,7 @@ public class VectorInfo {
         while (it.hasNext()) {
             String code = it.next();
             Document originDoc = collection.find(eq("id", code)).first();
-            if (originDoc.toJson() != null) sb.append((String) originDoc.get("vector")+",");
+            if (originDoc.toJson() != null) sb.append((String) originDoc.get("vector").toString()+",");
         }
         if (sb.length() > 1) {
             // 存疑，多线程访问时爆数组越界
@@ -114,7 +114,7 @@ public class VectorInfo {
         while (it.hasNext()) {
             String code = it.next();
             Document originDoc = collection.find(eq("id", code)).first();
-            if (originDoc.toJson() != null) sb.append((String) originDoc.get("vector")+",");
+            if (originDoc.toJson() != null) sb.append((String) originDoc.get("vector").toString()+",");
         }
         if (sb.length() > 1) {
             // 存疑，多线程访问时爆数组越界
@@ -142,7 +142,7 @@ public class VectorInfo {
         while (it.hasNext()) {
             String code = it.next();
             Document originDoc = collection.find(eq("id", code)).first();
-            if (originDoc.toJson() != null) sb.append((String) originDoc.get("vector")+",");
+            if (originDoc.toJson() != null) sb.append((String) originDoc.get("vector").toString()+",");
         }
         if (sb.length() > 1) {
             // 存疑，多线程访问时爆数组越界
@@ -155,6 +155,5 @@ public class VectorInfo {
         sb.append("]");
         return sb.toString();
     }
-
 
 }

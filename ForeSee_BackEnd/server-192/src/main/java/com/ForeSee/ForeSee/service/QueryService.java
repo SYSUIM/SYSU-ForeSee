@@ -10,6 +10,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.util.List;
+import java.util.ArrayList;
+import java.util.LinkedHashSet;
 import org.json.JSONObject;
 import java.util.Arrays;
 import org.bson.Document;
@@ -41,6 +43,8 @@ public class QueryService {
     RuleMatchDao rule;
     @Autowired
     HttpDao httpDao;
+
+    private int sortNum = 50;
 
 
     /**
@@ -77,7 +81,6 @@ public class QueryService {
         }
         // redis查询返回noticeIds，notice本身是标题检索，因此不需要重排
         List<String> noticeIds = noticeQ.getNoticeIds(query);
-        log.info("Notice Query matching result number: " + noticeIds.size());
         // mongodb方法
         MongoClient mongoClient=null;
         String noticeInfo;
@@ -121,7 +124,6 @@ public class QueryService {
         }
         // redis查询返回stockCodeList
         List<String> reportIds = reportQ.getReportIds(query);
-        log.info("Report Query matching result number: " + reportIds.size());
         // mongodb方法
         MongoClient mongoClient=null;
         String reportInfo;
@@ -161,8 +163,12 @@ public class QueryService {
         JSONObject jsonObject = new JSONObject();
         try {// 实体提取
             String jsonResult = httpDao.getEntities(query, "news");
+            log.info(jsonResult);
             jsonObject = new JSONObject(jsonResult);
             query = jsonObject.getString("core_ent") + " " + jsonObject.getString("norm_ent");
+            if (query.length() < 2){
+                query = jsonObject.getString("non_ent");
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -175,14 +181,18 @@ public class QueryService {
             mongoClient = MongoConn.getConn();
             // 返回的id数比需求页数少
             if (newsIds.size() < Integer.parseInt(page)*10) {
-                query = query + " " + jsonObject.getString("non_ent");
+                try {
+                    query = jsonObject.getString("core_ent") + " " + jsonObject.getString("norm_ent") + " " + jsonObject.getString("non_ent");
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
                 List<String> fcIds = newsQ.getNewsIds(query);
                 // 精排
                 try {
                     int idSize = fcIds.size();
                     List<String> subIds;
-                    if ( idSize >= 200) {
-                        subIds = fcIds.subList(0, 200);
+                    if ( idSize >= sortNum) {
+                        subIds = fcIds.subList(0, sortNum);
                     } else {
                         subIds = fcIds.subList(0, idSize);
                     }
@@ -199,6 +209,9 @@ public class QueryService {
                 }
                 newsIds.addAll(fcIds);
             }
+            newsIds = new ArrayList<String>(new LinkedHashSet<String>(newsIds));
+            newsIds.remove("");
+            log.info(newsIds.toString());
             if (newsIds.size()==0){
                 // 根据企业索引倒推
                 List<String> stockCodes = companyQ.getStockCodes(query);
@@ -225,8 +238,12 @@ public class QueryService {
         try {
             // 实体提取
             String jsonResult=httpDao.getEntities(query, "industry");
+            log.info(jsonResult);
             jsonObject= new JSONObject(jsonResult);
             query = jsonObject.getString("core_ent") + " " + jsonObject.getString("norm_ent");
+            if (query.length() < 2){
+                query = jsonObject.getString("non_ent");
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -236,14 +253,18 @@ public class QueryService {
         String industryInfo;
         try {
             mongoClient = MongoConn.getConn();
-            query = query + " " + jsonObject.getString("non_ent");
+            try {
+                query = jsonObject.getString("core_ent") + " " + jsonObject.getString("norm_ent") + " " + jsonObject.getString("non_ent");
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
             List<String> fcIds = industryQ.getIndustryCodes(query);
             // 精排
             try {
                 int idSize = fcIds.size();
                 List<String> subIds;
-                if ( idSize >= 200) {
-                    subIds = fcIds.subList(0, 200);
+                if ( idSize >= sortNum) {
+                    subIds = fcIds.subList(0, sortNum);
                 } else {
                     subIds = fcIds.subList(0, idSize);
                 }
@@ -259,6 +280,8 @@ public class QueryService {
                 e.printStackTrace();
             }
             industryCodes.addAll(fcIds);
+            industryCodes = new ArrayList<String>(new LinkedHashSet<String>(industryCodes));
+            industryCodes.remove("");
             // 如果检索不到结果
             if (industryCodes.size()==0) {
                 // redis查询返回newsIds
@@ -288,7 +311,11 @@ public class QueryService {
             // 实体提取
             String jsonResult=httpDao.getEntities(query, "stock");
             jsonObject= new JSONObject(jsonResult);
+            log.info(jsonResult);
             query = jsonObject.getString("core_ent") + " " + jsonObject.getString("norm_ent");
+            if (query.length() < 2){
+                query = jsonObject.getString("non_ent");
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -301,14 +328,18 @@ public class QueryService {
             mongoClient = MongoConn.getConn();
             // 返回的id数比需求页数少
             if (stockCodes.size() < Integer.parseInt(page)*6) {
-                query = query + " " + jsonObject.getString("non_ent");
-                List<String> fcIds = companyQ.getStockCodes(query);
+                try {
+                    query = jsonObject.getString("core_ent") + " " + jsonObject.getString("norm_ent") + " " + jsonObject.getString("non_ent");
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                List<String> fcIds = companyQ.getSomeStockCodes(query);
                 // 精排
                 try {
                     int idSize = fcIds.size();
                     List<String> subIds;
-                    if ( idSize >= 200) {
-                        subIds = fcIds.subList(0, 200);
+                    if ( idSize >= sortNum) {
+                        subIds = fcIds.subList(0, sortNum);
                     } else {
                         subIds = fcIds.subList(0, idSize);
                     }
@@ -326,6 +357,8 @@ public class QueryService {
                 }
                 stockCodes.addAll(fcIds);
             }
+            stockCodes = new ArrayList<String>(new LinkedHashSet<String>(stockCodes));
+            stockCodes.remove("");
             // 如果检索不到结果
             if (stockCodes.size()==0) {
                 // redis查询返回newsIds
@@ -341,6 +374,5 @@ public class QueryService {
         mongoClient.close();
         return companyInfo;
     }
-
 
 }

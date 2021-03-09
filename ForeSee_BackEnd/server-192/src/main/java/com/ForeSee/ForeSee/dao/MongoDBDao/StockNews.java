@@ -37,7 +37,6 @@ public class StockNews {
      * @return 见/server-192/src/main/resources/FrontEndData/Query/companyNews.json
      */
     public static String getNewsBasedStockCodes(List<String> stockCodes, MongoClient client, String page) {
-        
         totalRecords = stockCodes.size();
         try{
             stockCodes = stockCodes.subList((Integer.parseInt(page)-1)*pageSize, Integer.parseInt(page)*pageSize);
@@ -83,6 +82,7 @@ public class StockNews {
             @Override
             public Object transform(Object o) {
                 return Integer.valueOf(o.toString());
+                
             }
         }, idList);
         cursor = collection.find(in("news_id", idList))
@@ -113,6 +113,7 @@ public class StockNews {
             @Override
             public Object transform(Object o) {
                 return Integer.valueOf(o.toString());
+                
             }
         }, idList);
         collection = client.getDatabase("ForeSee").getCollection(tableName);

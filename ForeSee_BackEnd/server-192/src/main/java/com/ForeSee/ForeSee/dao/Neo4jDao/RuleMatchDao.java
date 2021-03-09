@@ -25,10 +25,13 @@ public class RuleMatchDao {
     public static List<String> getRelation(String query){
         List<String> target = new ArrayList<>();
         String name = "", rl = "";
+        
+        String pattern;
+        boolean isMatch;
+        
         // 判断是否有关键词：的
-        String pattern = ".*的.*";
-        boolean isMatch = Pattern.matches(pattern, query);
-
+        pattern = ".*的.*";
+        isMatch = Pattern.matches(pattern, query);
         // 如果包含“的”
         if (isMatch){
             pattern = ".*是.*";
@@ -37,14 +40,28 @@ public class RuleMatchDao {
                 pattern = "(\\D*)的(\\D*)是.*";
             } else {
                 pattern = "(\\D*)的(\\D*)";
-            }
+            } 
             Pattern r = Pattern.compile(pattern);
             Matcher m = r.matcher(query);
             if (m.find( )) {
                 name =  m.group(1);
                 rl = m.group(2);
             } 
+        } else {
+            pattern = ".* .*";
+            isMatch = Pattern.matches(pattern, query);
+            // 如果包含“的”
+            if (isMatch){
+                pattern = "(\\D*) (\\D*)";
+                Pattern r = Pattern.compile(pattern);
+                Matcher m = r.matcher(query);
+                if (m.find( )) {
+                    name =  m.group(1);
+                    rl = m.group(2);
+                } 
+            }
         }
+
         target.add(name);
         target.add(rl);
         

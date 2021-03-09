@@ -53,26 +53,21 @@ public class CompanyQuery {
         String queries[] = query.split(" ");
         int runSize = queries.length;
         List<String> res = new ArrayList<>();
-        Jedis jedis = jedisUtil.getClient();
         //不适用多线程，因为每个词次序代表了重要性
         for(int i = 0; i < runSize; i++)
         {
             String key = queries[i];
             try {
-                jedis.select(1);
                 //模糊匹配
                 res.addAll(fz.FuzzySearchList(key, 1));
             } catch (Exception e){
-                System.out.println("Error in RedisDao getStockCodes");
                 e.printStackTrace();
             }
                 
         }
-        jedis.close();
-        jedis = null;
         List<String> result = new ArrayList<String>(new LinkedHashSet<String>(res)); //去重（顺序不变）
         finishTime = System.currentTimeMillis();
-        log.info("RedisDao getStockCodes process time:" + (finishTime - startTime));
+        log.info("RedisDao companyFuzzySearch process time:" + (finishTime - startTime));
 
         return result; 
     }
@@ -97,12 +92,12 @@ public class CompanyQuery {
         {
             String key = queries[i];
             try {
+                res.addAll(fz.FuzzySearchList(key, 1));
                 if(jedis.exists(key)){
                     res.addAll(jedis.smembers(key));
                     // log.info("DB 13: "+key+"; result: "+jedis.smembers(key));
                 }
             } catch (Exception e){
-                System.out.println("Error in RedisDao getStockCodes");
                 e.printStackTrace();
             }
         }
@@ -111,11 +106,45 @@ public class CompanyQuery {
         List<String> result = new ArrayList<String>(new LinkedHashSet<String>(res)); //去重（顺序不变）
         finishTime = System.currentTimeMillis();
         log.info("RedisDao getStockCodes process time:" + (finishTime - startTime));
-
         return result; 
     }
 
-    
+    /**
+     * 根据传入的query进行切词，返回所有检索字段对应检索结果的stockCode列表，无模糊匹配
+     * @param query
+     * @return stockList
+     */
+    public List<String> getSomeStockCodes(String query)
+    {
+        startTime = System.currentTimeMillis();
+        //对检索词串进行切词
+        String queries[] = query.split(" ");
+        int runSize = queries.length;
+        List<String> res = new ArrayList<>();
+        Jedis jedis = jedisUtil.getClient();
+        //不适用多线程，因为每个词次序代表了重要性
+        //进行词匹配
+        jedis.select(13);
+        for(int i = 0; i < runSize; i++)
+        {
+            String key = queries[i];
+            try {
+                if(jedis.exists(key)){
+                    res.addAll(jedis.smembers(key));
+                    // log.info("DB 13: "+key+"; result: "+jedis.smembers(key));
+                }
+            } catch (Exception e){
+                e.printStackTrace();
+            }
+        }
+        jedis.close();
+        jedis = null;
+        List<String> result = new ArrayList<String>(new LinkedHashSet<String>(res)); //去重（顺序不变）
+        finishTime = System.currentTimeMillis();
+        log.info("RedisDao getStockCodes process time:" + (finishTime - startTime));
+        return result; 
+    }
+
     /**
      * 根据传入的industryCode/industryName，返回stockCode列表，用于InfoService的getNews
      * @param industryCode
@@ -143,6 +172,5 @@ public class CompanyQuery {
         log.info("RedisDao getStockCodeBasedIndustry process time:" + (finishTime - startTime));
         return result;  
     }
-
 
 }

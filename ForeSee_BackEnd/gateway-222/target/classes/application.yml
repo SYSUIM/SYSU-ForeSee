@@ -1,0 +1,98 @@
+server:
+  port: 6666
+
+
+spring:
+  profiles:
+    active: prod  # 指定配置文件
+  application:
+    name: springcloud-gateway
+  cloud:
+    gateway:
+      discovery:
+        locator:
+          enabled: true # 开启从服务中心动态创建路由的功能
+      routes:
+        - id: springcloud-foresee1
+          uri: lb://springcloud-foresee
+          predicates:
+            - Path=/companyInfo/**
+            - Method=GET
+
+        - id: springcloud-foresee2
+          uri: lb://springcloud-foresee
+          predicates:
+            - Path=/notice/**
+            - Method=GET
+
+        - id: springcloud-foresee3
+          uri: lb://springcloud-foresee
+          predicates:
+            - Path=/companyNews/**
+            - Method=GET
+
+        - id: springcloud-foresee4
+          uri: lb://springcloud-foresee
+          predicates:
+            - Path=/industryInfo/**
+            - Method=GET
+
+        - id: springcloud-foresee5
+          uri: lb://springcloud-foresee
+          predicates:
+            - Path=/report/**
+            - Method=GET
+
+
+        - id: springcloud-foresee6
+          uri: lb://springcloud-foresee
+          predicates:
+            - Path=/companyQuery/**
+            - Method=GET
+
+
+        - id: springcloud-foresee7
+          uri: lb://springcloud-foresee
+          predicates:
+            - Path=/industryNews/**
+            - Method=GET
+
+
+        - id: springcloud-foresee8
+          uri: lb://springcloud-foresee
+          predicates:
+            - Path=/newsQuery/**
+            - Method=GET
+
+
+        - id: springcloud-foresee9
+          uri: lb://springcloud-foresee
+          predicates:
+            - Path=/noticeQuery/**
+            - Method=GET
+
+
+        - id: springcloud-foresee10
+          uri: lb://springcloud-foresee
+          predicates:
+            - Path=/reportQuery/**
+            - Method=GET
+
+
+        - id: springcloud-foresee11
+          uri: lb://springcloud-foresee
+          predicates:
+            - Path=/industryQuery/**
+            - Method=GET
+
+        - id: springcloud-foresee12
+          uri: lb://springcloud-foresee
+          predicates:
+            - Path=/research/**
+            - Method=GET
+
+        - id: springcloud-foresee13
+          uri: lb://springcloud-foresee
+          predicates:
+            - Path=/relation/**
+            - Method=GET
