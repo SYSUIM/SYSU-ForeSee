@@ -1,6 +1,0 @@
-mongoimport --db ForeSee --collection geo --jsonArray --file geoData.json
-mongoimport --db ForeSee --collection BasicInfo --jsonArray --file BasicInfo.json
-mongoimport --db ForeSee --collection Profit --jsonArray --file profit.json
-mongoimport --db ForeSee --collection News --jsonArray --file News.json
-mongoimport --db ForeSee --collection News --jsonArray --file News.json
-mongoimport --db ForeSee --collection Notice --jsonArray --file Notice.json

@@ -15,11 +15,13 @@ print("Successfully load data")
 for i in data:
     s = i.get('industry_name')
     t = i.get('industry_code')
-    # redis_conn.set(s, t)
-    # redis_conn.set(t, t)
+    redis_conn.set(s, t)
+    redis_conn.set(t, t)
     stocks = i.get('stock')
     for j in stocks.keys():
-        redis_conn.sadd(j,t)
+        redis_conn.set(""+j,t)
+    for j in stocks.values():
+        redis_conn.set(""+j,t)
     # i = i.split(',')
     # redis_conn.sadd(i[0],i[1])
     # redis_conn.sadd(i[2],i[1])

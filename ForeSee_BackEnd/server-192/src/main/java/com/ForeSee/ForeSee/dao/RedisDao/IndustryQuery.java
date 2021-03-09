@@ -81,9 +81,7 @@ public class IndustryQuery {
             jedis.select(2);
             try {
                 if(jedis.exists(key)){
-                    // smembers方法存疑
-                    res.addAll(jedis.smembers(key));
-                    // log.info("DB 2: "+key+"; result: "+jedis.smembers(key));
+                    res.add(jedis.get(key));
                 }
                 
             } catch (Exception e){

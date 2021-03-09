@@ -91,23 +91,23 @@ public class CompanyQuery {
         List<String> res = new ArrayList<>();
         Jedis jedis = jedisUtil.getClient();
         //不适用多线程，因为每个词次序代表了重要性
+        //进行词匹配
+        jedis.select(13);
         for(int i = 0; i < runSize; i++)
         {
             String key = queries[i];
             try {
-                //进行词匹配
-                jedis.select(13);
                 if(jedis.exists(key)){
                     res.addAll(jedis.smembers(key));
                     // log.info("DB 13: "+key+"; result: "+jedis.smembers(key));
                 }
-                jedis.close();
-                jedis = null;
             } catch (Exception e){
                 System.out.println("Error in RedisDao getStockCodes");
                 e.printStackTrace();
             }
         }
+        jedis.close();
+        jedis = null;
         List<String> result = new ArrayList<String>(new LinkedHashSet<String>(res)); //去重（顺序不变）
         finishTime = System.currentTimeMillis();
         log.info("RedisDao getStockCodes process time:" + (finishTime - startTime));

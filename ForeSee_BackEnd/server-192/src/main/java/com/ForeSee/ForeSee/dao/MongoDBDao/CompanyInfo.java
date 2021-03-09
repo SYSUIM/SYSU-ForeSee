@@ -37,8 +37,15 @@ public class CompanyInfo {
         }
         Iterator<String> it = stockCodes.iterator();
         while (it.hasNext()) {
-            Document originDoc = (Document) collection.find(eq("companyInfo.stock_code", it.next())).first().get("companyInfo");
-            if (originDoc.toJson() != null) sb.append(originDoc.toJson()+",");
+            String code = it.next();
+            // 有it.next()为空的情况，需要排查
+            try {
+                Document originDoc = (Document) collection.find(eq("companyInfo.stock_code", code)).first().get("companyInfo");
+                if (originDoc.toJson() != null) sb.append(originDoc.toJson()+",");
+            }catch (Exception e){
+                continue;
+            }
+            
         }
         if (sb.length() > 1) {
             sb.deleteCharAt(sb.length() - 1);

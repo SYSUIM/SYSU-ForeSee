@@ -80,5 +80,5 @@ if __name__ == '__main__':
     }
 
     # /data/ForeSee_BackEnd/server-192/src/main/resources/MongoDB
-    info = companyVector
+    info = industryInfo
     loadData(info, flushcol=True)
