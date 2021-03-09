@@ -42,7 +42,7 @@ public class HttpDao {
      */
     public String sortIds(String values){
         String url = "http://192.168.1.107:7789/rank";
-        values = values.replace("\"[", "[").replace("]\"", "]");
+        values = values.replace("\"[", "[").replace("]\"", "]").replace("\\", "");
         return httpUtil.sendPost(url, values);
     }
 }

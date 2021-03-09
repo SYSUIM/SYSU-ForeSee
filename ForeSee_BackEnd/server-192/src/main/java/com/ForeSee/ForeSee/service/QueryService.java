@@ -187,8 +187,10 @@ public class QueryService {
                         subIds = fcIds.subList(0, idSize);
                     }
                     Document dm = new Document();
-                    dm.put("id", subIds.toString());
-                    dm.put("queryVec", jsonObject.getString("query_vec"));
+                    String id = subIds.toString();
+                    id = id.replace("[","[\"").replace("]","\"]").replace(", ","\", \"");
+                    dm.put("id", id);
+                    dm.put("queryVec", jsonObject.getJSONArray("query_vec").toString());
                     String vec = VectorInfo.getNewsVector(subIds, mongoClient);
                     dm.put("vectors", vec);
                     newsIds.addAll(Arrays.asList(httpDao.sortIds(dm.toJson()).split(" ")));
@@ -246,8 +248,10 @@ public class QueryService {
                     subIds = fcIds.subList(0, idSize);
                 }
                 Document dm = new Document();
-                dm.put("id", subIds.toString());
-                dm.put("queryVec", jsonObject.getString("query_vec"));
+                String id = subIds.toString();
+                id = id.replace("[","[\"").replace("]","\"]").replace(", ","\", \"");
+                dm.put("id", id);
+                dm.put("queryVec",  jsonObject.getJSONArray("query_vec").toString());
                 String vec = VectorInfo.getIndustryVector(subIds, mongoClient);
                 dm.put("vectors", vec);
                 industryCodes.addAll(Arrays.asList(httpDao.sortIds(dm.toJson()).split(" ")));
@@ -310,7 +314,9 @@ public class QueryService {
                     }
                     
                     Document dm = new Document();
-                    dm.put("id", subIds.toString());
+                    String id = subIds.toString();
+                    id = id.replace("[","[\"").replace("]","\"]").replace(", ","\", \"");
+                    dm.put("id", id);
                     dm.put("queryVec", jsonObject.getJSONArray("query_vec").toString());
                     String vec = VectorInfo.getCompanyVector(subIds, mongoClient);
                     dm.put("vectors", vec);
