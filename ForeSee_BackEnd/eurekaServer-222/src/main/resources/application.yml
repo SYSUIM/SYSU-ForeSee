@@ -1,0 +1,10 @@
+server:
+  port: 8888
+
+spring:
+  profiles:
+    active: prod  # 指定配置文件
+  application:
+    name: springcloud-eureka-server
+
+
