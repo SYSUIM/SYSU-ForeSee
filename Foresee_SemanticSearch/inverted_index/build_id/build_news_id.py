@@ -53,7 +53,7 @@ def main(news_text_path, news_path, output_path):
         with open(f'{output_path}{ind}.json', 'w', encoding='utf-8') as f:
             json.dump(all_data, f, ensure_ascii=False, indent=4)
         whole_data.extend(all_data)
-    with open(f'news_id.json', 'w', encoding='utf-8') as f:
+    with open('news_id.json', 'w', encoding='utf-8') as f:
         json.dump(whole_data, f, ensure_ascii=False, indent=4)
 
 
@@ -78,7 +78,7 @@ def replenish_empty(news_path, output_path):
                         whole_data.append(this)
     with open(f'{output_path}/lack.json', 'w', encoding='utf-8') as f:
         json.dump(whole_data, f, ensure_ascii=False, indent=4)
-    logger.info(f'Finish replenishing')
+    logger.info('Finish replenishing')
 
 
 def merge(input_path):
@@ -100,6 +100,6 @@ if __name__ == '__main__':
     news_txt_path = '/data/prj2020/EnterpriseSpider/news/news/'
     news_json_path = '/data/prj2020/EnterpriseSpider/news/news_json/'
     output_path = '/data/prj2020/EnterpriseSpider/index/id/news_id'
-    # main(news_txt_path, news_json_path, output_path)
+    main(news_txt_path, news_json_path, output_path)
     replenish_empty(news_json_path, output_path)
     merge(output_path)
