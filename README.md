@@ -1,4 +1,4 @@
-<p align="center"><a href="http://180.76.249.27/sysuforesee/foresee/#/" target="_blank" rel="noopener noreferrer"><img width="100" src="http://180.76.249.27/sysuforesee/foresee/static/img/logo-black.ee6db47c.png" alt="ForeSee logo"></a></p>
+<p align="center"><a href="http://180.76.249.27/sysuforesee/foresee/#/" target="_blank" rel="noopener noreferrer"><img src="http://180.76.249.27/sysuforesee/foresee/static/img/logo-black.ee6db47c.png" alt="ForeSee logo"></a></p>
 
 # SYSU-ForeSee
 ForeSee是**基于大规模商业情报融合的企业智能实时分析及决策支持平台**项目，提供包括前后端框架、数据挖掘在内的全栈解决方案。
