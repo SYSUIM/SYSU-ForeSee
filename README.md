@@ -6,7 +6,7 @@ ForeSee是**基于大规模商业情报融合的企业智能实时分析及决�
 欢迎访问 [ForeSee](http://180.76.249.27/sysuforesee/foresee/#/) 平台以查看案例展示。
 
 ## 1. ForeSee_FrontEnd
-前端模块采用[Vue.js](https://vuejs.org/index.html)([Github](https://github.com/vuejs/vue))和[E charts](https://echarts.apache.org/zh/index.html)([Github](https://github.com/apache/echarts))开发。
+前端模块采用[Vue.js](https://vuejs.org/index.html)([Github](https://github.com/vuejs/vue))和[Echarts](https://echarts.apache.org/zh/index.html)([Github](https://github.com/apache/echarts))开发。
 
 <table>
   <tbody>
@@ -23,7 +23,7 @@ ForeSee是**基于大规模商业情报融合的企业智能实时分析及决�
       </td>
       <td align="center" valign="middle">
         <a href="https://echarts.apache.org/zh/index.html" target="_blank">
-          <img src="https://cdn.jsdelivr.net/gh/apache/echarts-website@asf-site/zh/images/logo.png?_v_=20200710_1">
+          <img width="222px" src="https://cdn.jsdelivr.net/gh/apache/echarts-website@asf-site/zh/images/logo.png?_v_=20200710_1">
         </a>
       </td>
       <!-- <td align="center" valign="middle">
