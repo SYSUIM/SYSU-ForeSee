@@ -27,9 +27,13 @@ public class IndustryInfo {
 
         while (it.hasNext()) {
             String code = it.next();
-            Document originDoc = collection.find(eq("IndustryInfo.industry_code", code)).first();
-            originDoc = (Document) originDoc.get("IndustryInfo");
-            if (originDoc.toJson() != null) sb.append(originDoc.toJson()+",");
+            try {
+                Document originDoc = collection.find(eq("IndustryInfo.industry_code", code)).first();
+                originDoc = (Document) originDoc.get("IndustryInfo");
+                if (originDoc.toJson() != null) sb.append(originDoc.toJson()+",");
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
         if (sb.length() > 1) {
             // 存疑，多线程访问时爆数组越界

@@ -41,8 +41,7 @@ public class QueryService {
     RelationQuery relationQ;
     @Autowired
     RuleMatchDao rule;
-    @Autowired
-    HttpDao httpDao;
+    
 
     private int sortNum = 50;
 
@@ -72,31 +71,15 @@ public class QueryService {
      * @return
      */
     public String getNoticeQuery(String query, String page){
-        try{// 实体提取
-            String jsonResult=httpDao.getEntities(query, "notice");
-            JSONObject jsonObject= new JSONObject(jsonResult);
-            query = jsonObject.getString("core_ent") + " " + jsonObject.getString("norm_ent") + " " + jsonObject.getString("non_ent");
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        // redis查询返回noticeIds，notice本身是标题检索，因此不需要重排
         List<String> noticeIds = noticeQ.getNoticeIds(query);
-        // mongodb方法
-        MongoClient mongoClient=null;
+        MongoClient mongoClient = null;
         String noticeInfo;
         try {
             mongoClient = MongoConn.getConn();
-            // 如果检索不到结果
-            if (noticeIds.size()==0) {
+            if (noticeIds.size() == 0) {
                 // 根据企业索引倒推
-                List<String> stockCodes = companyQ.getStockCodes(query);
-                if (stockCodes.size()==0){
-                    // 根据新闻索引倒推
-                    List<String> newsIds = newsQ.getNewsIds(query);
-                    // 根据news倒推stockCodes
-                    stockCodes = StockNews.getStockCodes(newsIds, mongoClient);
-                }
-                // 根据industryCodes检索出report内容
+                List<String> stockCodes = companyQ.queryService(query, mongoClient);
+                stockCodes.remove(0);
                 noticeInfo = StockNotice.getNoticeBasedStockCodes(stockCodes, mongoClient, page);
             } else {
                 noticeInfo = StockNotice.getNoticeBasedQuery(noticeIds, mongoClient, page);
@@ -115,40 +98,25 @@ public class QueryService {
      * @return
      */
     public String getReportQuery(String query, String page){
-        try{ // 实体提取
-            String jsonResult=httpDao.getEntities(query, "report");
-            JSONObject jsonObject= new JSONObject(jsonResult);
-            query = jsonObject.getString("core_ent") + " " + jsonObject.getString("norm_ent") + " " + jsonObject.getString("non_ent");
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        // redis查询返回stockCodeList
+        
         List<String> reportIds = reportQ.getReportIds(query);
-        // mongodb方法
-        MongoClient mongoClient=null;
+        MongoClient mongoClient = null;
         String reportInfo;
         try {
             mongoClient = MongoConn.getConn();
-            // 如果检索不到结果
-            if (reportIds.size()==0) {
+            if (reportIds.size() == 0) {
                 // 根据企业索引倒推
-                List<String> stockCodes = companyQ.getStockCodes(query);
-                if (stockCodes.size()==0){
-                    // 根据新闻索引倒推
-                    List<String> newsIds = newsQ.getNewsIds(query);
-                    // 根据news倒推stockCodes
-                    stockCodes = StockNews.getStockCodes(newsIds, mongoClient);
-                }
+                List<String> stockCodes = companyQ.queryService(query, mongoClient);
+                stockCodes.remove(0);
                 // 根据stockCodes到redis DB2中检索出对应的industryCodes
                 List<String> industryCodes = industryQ.getIndustryCodes(stockCodes);
-                // 根据industryCodes检索出report内容
                 reportInfo = IndustryReport.getReportBasedIndustryCodes(industryCodes, mongoClient, page);
             } else {
                 reportInfo = IndustryReport.getReportBasedQuery(reportIds, mongoClient, page);
             }
         } catch (Exception e){
             e.printStackTrace();
-            reportInfo = "[]";
+            reportInfo = "{\"totalRecords\":0, \"information\":[], \"page\":1}";
         }
         mongoClient.close();
         return reportInfo;
@@ -160,61 +128,16 @@ public class QueryService {
      * @return
      */
     public String getNewsQuery(String query, String page){
-        JSONObject jsonObject = new JSONObject();
-        try {// 实体提取
-            String jsonResult = httpDao.getEntities(query, "news");
-            log.info(jsonResult);
-            jsonObject = new JSONObject(jsonResult);
-            query = jsonObject.getString("core_ent") + " " + jsonObject.getString("norm_ent");
-            if (query.length() < 2){
-                query = jsonObject.getString("non_ent");
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        // redis查询返回newsIds
-        List<String> newsIds = newsQ.newsFuzzySearch(query);
+        
         String newsInfo;
-        MongoClient mongoClient=null;
+        MongoClient mongoClient = null;
         try {
-            
             mongoClient = MongoConn.getConn();
-            // 返回的id数比需求页数少
-            if (newsIds.size() < Integer.parseInt(page)*10) {
-                try {
-                    query = jsonObject.getString("core_ent") + " " + jsonObject.getString("norm_ent") + " " + jsonObject.getString("non_ent");
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-                List<String> fcIds = newsQ.getNewsIds(query);
-                // 精排
-                try {
-                    int idSize = fcIds.size();
-                    List<String> subIds;
-                    if ( idSize >= sortNum) {
-                        subIds = fcIds.subList(0, sortNum);
-                    } else {
-                        subIds = fcIds.subList(0, idSize);
-                    }
-                    Document dm = new Document();
-                    String id = subIds.toString();
-                    id = id.replace("[","[\"").replace("]","\"]").replace(", ","\", \"");
-                    dm.put("id", id);
-                    dm.put("queryVec", jsonObject.getJSONArray("query_vec").toString());
-                    String vec = VectorInfo.getNewsVector(subIds, mongoClient);
-                    dm.put("vectors", vec);
-                    newsIds.addAll(Arrays.asList(httpDao.sortIds(dm.toJson()).split(" ")));
-                }catch (Exception e){
-                    e.printStackTrace();
-                }
-                newsIds.addAll(fcIds);
-            }
-            newsIds = new ArrayList<String>(new LinkedHashSet<String>(newsIds));
-            newsIds.remove("");
-            log.info(newsIds.toString());
-            if (newsIds.size()==0){
+            List<String> newsIds = newsQ.getNewsIds(query, mongoClient, page);
+            if (newsIds.size() == 0){
                 // 根据企业索引倒推
-                List<String> stockCodes = companyQ.getStockCodes(query);
+                List<String> stockCodes = companyQ.queryService(query, mongoClient);
+                stockCodes.remove(0);
                 newsInfo = StockNews.getNewsBasedStockCodes(stockCodes, mongoClient, page);
             } else {
                 newsInfo = StockNews.getNewsBasedQuery(newsIds, mongoClient, page);
@@ -223,7 +146,6 @@ public class QueryService {
             e.printStackTrace();
             newsInfo = "[]";
         }
-        
         mongoClient.close();
         return newsInfo;
     }
@@ -234,64 +156,15 @@ public class QueryService {
      * @return
      */
     public String getIndustryQuery(String query){
-        JSONObject jsonObject = new JSONObject();
-        try {
-            // 实体提取
-            String jsonResult=httpDao.getEntities(query, "industry");
-            log.info(jsonResult);
-            jsonObject= new JSONObject(jsonResult);
-            query = jsonObject.getString("core_ent") + " " + jsonObject.getString("norm_ent");
-            if (query.length() < 2){
-                query = jsonObject.getString("non_ent");
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        List<String> industryCodes = industryQ.industryFuzzySearch(query);
-        // mongodb方法
-        MongoClient mongoClient=null;
-        String industryInfo;
+        MongoClient mongoClient = null;
+        String industryInfo, b;
         try {
             mongoClient = MongoConn.getConn();
-            try {
-                query = jsonObject.getString("core_ent") + " " + jsonObject.getString("norm_ent") + " " + jsonObject.getString("non_ent");
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            List<String> fcIds = industryQ.getIndustryCodes(query);
-            // 精排
-            try {
-                int idSize = fcIds.size();
-                List<String> subIds;
-                if ( idSize >= sortNum) {
-                    subIds = fcIds.subList(0, sortNum);
-                } else {
-                    subIds = fcIds.subList(0, idSize);
-                }
-                Document dm = new Document();
-                String id = subIds.toString();
-                id = id.replace("[","[\"").replace("]","\"]").replace(", ","\", \"");
-                dm.put("id", id);
-                dm.put("queryVec",  jsonObject.getJSONArray("query_vec").toString());
-                String vec = VectorInfo.getIndustryVector(subIds, mongoClient);
-                dm.put("vectors", vec);
-                industryCodes.addAll(Arrays.asList(httpDao.sortIds(dm.toJson()).split(" ")));
-            }catch (Exception e){
-                e.printStackTrace();
-            }
-            industryCodes.addAll(fcIds);
-            industryCodes = new ArrayList<String>(new LinkedHashSet<String>(industryCodes));
-            industryCodes.remove("");
-            // 如果检索不到结果
-            if (industryCodes.size()==0) {
-                // redis查询返回newsIds
-                List<String> newsIds = newsQ.getNewsIds(query);
-                // 根据news倒推stockCodes
-                List<String> stockCodes = StockNews.getStockCodes(newsIds, mongoClient);
-                // 根据stockCodes到redis DB2中检索出对应的industryCodes
-                industryCodes = industryQ.getIndustryCodes(stockCodes);
-            }
+            List<String> industryCodes = industryQ.queryService(query, mongoClient);
+            b = industryCodes.get(0);
+            industryCodes.remove(0);
             industryInfo = IndustryInfo.getIndustryInfo(industryCodes, mongoClient);
+
         }catch (Exception e){
             e.printStackTrace();
             industryInfo = "[]";
@@ -306,68 +179,18 @@ public class QueryService {
      * @return
      */
     public String getCompanyQuery(String query, String page){
-        JSONObject jsonObject = new JSONObject();
-        try {
-            // 实体提取
-            String jsonResult=httpDao.getEntities(query, "stock");
-            jsonObject= new JSONObject(jsonResult);
-            log.info(jsonResult);
-            query = jsonObject.getString("core_ent") + " " + jsonObject.getString("norm_ent");
-            if (query.length() < 2){
-                query = jsonObject.getString("non_ent");
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        // redis查询返回stockCodeList
-        List<String> stockCodes = companyQ.companyFuzzySearch(query);
-        // mongodb方法
-        MongoClient mongoClient=null;
+        MongoClient mongoClient = null;
         String companyInfo;
+        String b;
         try {
             mongoClient = MongoConn.getConn();
-            // 返回的id数比需求页数少
-            if (stockCodes.size() < Integer.parseInt(page)*6) {
-                try {
-                    query = jsonObject.getString("core_ent") + " " + jsonObject.getString("norm_ent") + " " + jsonObject.getString("non_ent");
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-                List<String> fcIds = companyQ.getSomeStockCodes(query);
-                // 精排
-                try {
-                    int idSize = fcIds.size();
-                    List<String> subIds;
-                    if ( idSize >= sortNum) {
-                        subIds = fcIds.subList(0, sortNum);
-                    } else {
-                        subIds = fcIds.subList(0, idSize);
-                    }
-                    
-                    Document dm = new Document();
-                    String id = subIds.toString();
-                    id = id.replace("[","[\"").replace("]","\"]").replace(", ","\", \"");
-                    dm.put("id", id);
-                    dm.put("queryVec", jsonObject.getJSONArray("query_vec").toString());
-                    String vec = VectorInfo.getCompanyVector(subIds, mongoClient);
-                    dm.put("vectors", vec);
-                    stockCodes.addAll(Arrays.asList(httpDao.sortIds(dm.toJson()).split(" ")));
-                }catch (Exception e){
-                    e.printStackTrace();
-                }
-                stockCodes.addAll(fcIds);
-            }
-            stockCodes = new ArrayList<String>(new LinkedHashSet<String>(stockCodes));
-            stockCodes.remove("");
-            // 如果检索不到结果
-            if (stockCodes.size()==0) {
-                // redis查询返回newsIds
-                List<String> newsIds = newsQ.getNewsIds(query);
-                // 根据news倒推stockCodes
-                stockCodes = StockNews.getStockCodes(newsIds, mongoClient);
-            }
+            List<String> stockCodes = companyQ.queryService(query, mongoClient);
+            b = stockCodes.get(0);
+            stockCodes.remove(0);
             companyInfo = CompanyInfo.getCompanyInfo(stockCodes, mongoClient, page);
-        }catch (Exception e){
+            companyInfo = companyInfo.substring(0, companyInfo.length()-1) + ", \"feedback\": \"" + b + "\"}";
+            
+        } catch (Exception e) {
             e.printStackTrace();
             companyInfo = "[]";
         }

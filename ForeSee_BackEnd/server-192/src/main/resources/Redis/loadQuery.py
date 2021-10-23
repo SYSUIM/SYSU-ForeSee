@@ -43,7 +43,7 @@ class loadQuery():
 if __name__ == '__main__':
     # 行业11 : 
     industry = {
-        'path': '/data/prj2020/EnterpriseSpider/Index/index/industry_index.txt',
+        'path': '/data/prj2020/EnterpriseSpider/index/index/industry_supplement.txt',
         'db': 11,
         'type':'string',
         'add':'file'
@@ -88,7 +88,17 @@ if __name__ == '__main__':
         'add':'file'
         }
 
-    n = loadQuery(newsTitle)
+    
+    # 资讯标题10
+    reportTitle = {
+        'path': '/data/prj2020/EnterpriseSpider/index/index/report_title_index.txt',
+        'db': 10,
+        'type':'string',
+        'add':'file'
+        }
+
+    n = loadQuery(industry)
     n.run()
+    # /data/ForeSee_BackEnd/server-192/src/main/resources/Redis
 
 

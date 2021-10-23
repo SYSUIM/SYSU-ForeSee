@@ -3,6 +3,7 @@ package com.ForeSee.ForeSee.dao.RedisDao;
 
 import com.ForeSee.ForeSee.util.*;
 import com.ForeSee.ForeSee.dao.RedisDao.*;
+import com.ForeSee.ForeSee.dao.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
@@ -20,7 +21,7 @@ import java.util.List;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-
+import org.json.JSONObject;
 
 /**
  * @author zhongshsh
@@ -33,12 +34,15 @@ import java.util.concurrent.Executors;
 @Component
 public class ReportQuery {
 
+    //模糊查询
+    @Autowired
+    FuzzySearch fz;
+
     @Autowired
     JedisUtil jedisUtil;
 
-    // @Autowired
-    JedisUtil_105 jedisUtil_105 = new JedisUtil_105();
-
+    @Autowired
+    HttpDao httpDao;
 
     //记录时间，用于测试
     long startTime;
@@ -52,11 +56,27 @@ public class ReportQuery {
     public List<String> getReportIds(String query)
     {
         startTime = System.currentTimeMillis();
+
+        try{ // 实体提取
+            String jsonResult = httpDao.getEntities(query, "report");
+            JSONObject jsonObject =  new JSONObject(jsonResult);
+            query = jsonObject.getString("core_ent") + " " + jsonObject.getString("norm_ent") + " " + jsonObject.getString("non_ent");
+            query = query.trim().replace("  ", " ");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
         Jedis jedis= jedisUtil.getClient();
         List<String> res = new ArrayList<>();
         //对检索词串进行切词
         String queries[] = query.split(" ");
         int runSize = queries.length;
+        for(int i = 0; i < runSize; i++)
+        {
+            String key = queries[i];
+            //模糊匹配
+            res.addAll(fz.FuzzySearchList(key, 10));
+        }
         for(int i = 0; i < runSize; i++)
         {
             String key = queries[i];

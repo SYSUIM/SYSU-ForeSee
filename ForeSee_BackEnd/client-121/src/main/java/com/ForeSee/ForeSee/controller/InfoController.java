@@ -19,11 +19,6 @@ public class InfoController {
     @Value("${http.REST_URL_PREFIX}")
     String REST_URL_PREFIX;
 
-    /**
-     * 根据关键词检索关系
-     * @param query 关键词
-     * @return
-     */
     @GetMapping("/relation/{query}")
     public String getRelationQuery(@PathVariable("query")String query){
         log.info("Receive getRelationQuery request:" + query);
@@ -34,10 +29,11 @@ public class InfoController {
     }
 
     /**
-     * 根据关键词检索行业内容
+     * 根据关键词检索内容
      * @param query 关键词
      * @return
      */
+
     @GetMapping("/industryQuery/{query}")
     public String getIndustryQuery(@PathVariable("query")String query){
         log.info("Receive getCompanyInfo request:" + query);
@@ -46,26 +42,17 @@ public class InfoController {
         log.info("Result: " + result);
         return result;
     }
-
-    /**
-     * 根据关键词检索企业内容
-     * @param query 关键词
-     * @return
-     */
+	 
     @GetMapping("/companyQuery/{query}/{page}")
     public String getCompanyQuery(@PathVariable("query")String query,@PathVariable("page")String page){
-        log.info("Receive getCompanyInfo request:" + query + " page=" + page);
-        String url = REST_URL_PREFIX + "/companyQuery/" + query + "/" + page;;
+        log.info("Receive getCompanyInfo request:" + query + "page=" + page);
+        String url = REST_URL_PREFIX + "/companyQuery/" + query+"/"+page;
         String result = restTemplate.getForObject(url, String.class);
         log.info("Result: " + result);
         return result;
     }
 
-    /**
-     * 根据关键词检索资讯内容
-     * @param query 关键词
-     * @return
-     */
+
     @GetMapping("/reportQuery/{query}/{page}")
     public String getReportQuery(@PathVariable("query")String query,@PathVariable("page")String page){
         log.info("Receive reportQuery request:" + query+" page="+page);
@@ -75,11 +62,6 @@ public class InfoController {
         return result;
     }
 
-    /**
-     * 根据关键词检索新闻内容
-     * @param query 关键词
-     * @return
-     */
     @GetMapping("/newsQuery/{query}/{page}")
     public String getNewsQuery(@PathVariable("query")String query,@PathVariable("page")String page){
         log.info("Receive newsQuery request:" + query+" page="+page);
@@ -89,11 +71,6 @@ public class InfoController {
         return result;
     }
 
-    /**
-     * 根据关键词检索公告内容
-     * @param query 关键词
-     * @return
-     */
     @GetMapping("/noticeQuery/{query}/{page}")
     public String getNoticeQuery(@PathVariable("query")String query,@PathVariable("page")String page){
         log.info("Receive noticeQuery request:" + query+" page="+page);
@@ -117,12 +94,6 @@ public class InfoController {
         return result;
     }
 
-    /**
-     * 根据stockCode返回某一页的研究报告
-     * @param stockCode
-     * @param page
-     * @return
-     */
     @GetMapping("/research/{stockCode}/{page}")
     public String getAllResearch(@PathVariable("stockCode")String stockCode,@PathVariable("page")String page){
         log.info("Receive getAllResearch request:" + stockCode+" page="+page);
@@ -163,25 +134,8 @@ public class InfoController {
     }
 
     /**
-     * 根据industryCode返回某一页的资讯
-     * @param industryCode
-     * @param page
-     * @return
-     */
-    @GetMapping("/report/{industryCode}/{page}")
-    public String getIndustryIndex(@PathVariable("industryCode")String industryCode, @PathVariable("page")String page){
-
-        log.info("Receive getIndustryIndex request:" + industryCode +" page=" + page);
-
-        String url = REST_URL_PREFIX + "/report/" + industryCode + "/" + page;
-        String result = restTemplate.getForObject(url, String.class);
-        log.info("Result: " + result);
-        return result;
-    }
-
-    /**
-     * 检索某个企业的所有相关信息
-     * @param stockCode 股票代码
+     * 检索某个公司的所有相关信息
+     * @param stockCode 公司代号
      * @return
      */
     @GetMapping("/companyInfo/{stockCode}")
@@ -206,5 +160,21 @@ public class InfoController {
         log.info("Result: " + result);
         return result;
     }
+
+
+
+    @GetMapping("/report/{industryCode}/{page}")
+    public String getIndustryIndex(@PathVariable("industryCode")String industryCode, @PathVariable("page")String page){
+
+        log.info("Receive getIndustryIndex request:" + industryCode +" page=" + page);
+
+        String url = REST_URL_PREFIX + "/report/" + industryCode + "/" + page;
+        String result = restTemplate.getForObject(url, String.class);
+        log.info("Result: " + result);
+        return result;
+
+
+    }
+
 
 }

@@ -3,6 +3,8 @@ package com.ForeSee.ForeSee.dao.RedisDao;
 
 import com.ForeSee.ForeSee.util.*;
 import com.ForeSee.ForeSee.dao.RedisDao.*;
+import com.ForeSee.ForeSee.dao.*;
+
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
@@ -12,7 +14,6 @@ import org.springframework.stereotype.Repository;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.ScanParams;
 import redis.clients.jedis.ScanResult;
-
 import java.util.Iterator;
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
@@ -20,7 +21,7 @@ import java.util.List;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-
+import org.json.JSONObject;
 
 /**
  * @author zhongshsh
@@ -35,11 +36,10 @@ public class NoticeQuery {
 
     @Autowired
     JedisUtil jedisUtil;
+    @Autowired
+    HttpDao httpDao;
 
     // @Autowired
-    JedisUtil_113 jedisUtil_113 = new JedisUtil_113();
-    JedisUtil_112 jedisUtil_112 = new JedisUtil_112();
-    JedisUtil_106 jedisUtil_106 = new JedisUtil_106();
     JedisUtil_105 jedisUtil_105 = new JedisUtil_105();
 
 
@@ -55,6 +55,16 @@ public class NoticeQuery {
     public List<String> getNoticeIds(String query)
     {
         startTime = System.currentTimeMillis();
+
+        try{// 实体提取
+            String jsonResult = httpDao.getEntities(query, "notice");
+            JSONObject jsonObject =  new JSONObject(jsonResult);
+            query = jsonObject.getString("core_ent") + " " + jsonObject.getString("norm_ent") + " " + jsonObject.getString("non_ent");
+            query = query.trim().replace("  ", " ");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
         Jedis jedis= jedisUtil_105.getClient_105();
         jedis.select(14);
         List<String> res = new ArrayList<>();
@@ -81,4 +91,5 @@ public class NoticeQuery {
         log.info("RedisDao getNoticeIds process time:" + (finishTime - startTime));
         return result;  
     }
+
 }

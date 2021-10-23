@@ -63,16 +63,19 @@ public class RelationQuery {
         Document doc = new Document();
         Iterator<String> it = res.iterator();
         StringBuilder sb = new StringBuilder();
+        
         try {
             StatementResult result = session.run( "MATCH (a:企业名称) WHERE a.name =~ '.*"+name+".*' RETURN a AS result");
-            if ( result.hasNext()) {
+            
+            if ( result.hasNext() && name.length() > 1) {
                 Record record = result.next();
                 String rs = record.get( "result" ).get(rl).asString();
-                if ( result.hasNext() ){
-                    sb = new StringBuilder("{");
-                } else {
+                // log.info("name: "+name+";rl:"+rl+";result:"+rs);
+                // if ( result.hasNext() ){
+                //     sb = new StringBuilder("{");
+                // } else {
                     // null
-                    if (rs.length() > 4) {
+                    if ( !rs.equals("null") ) {
                         sb.append("{\"name\":\""+name+"\",\"relation\":\""+rl+"\",\"result\":\""+rs+"\",\"tableData\":[{");
                         while(it.hasNext()) {
                             int count = 0 ;
@@ -93,7 +96,7 @@ public class RelationQuery {
                     } else {
                         sb = new StringBuilder("{");
                     }
-                }
+                // }
             }
         } catch (Exception e){
             sb = new StringBuilder("{");

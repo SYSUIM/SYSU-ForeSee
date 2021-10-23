@@ -57,15 +57,10 @@ public class VectorInfo {
         while (it.hasNext()) {
             String code = it.next();
             Document originDoc = collection.find(eq("id", code)).first();
-            if (originDoc.toJson() != null) sb.append((String) originDoc.get("vector").toString()+",");
+            sb.append((String) originDoc.get("vector").toString()+",");
         }
         if (sb.length() > 1) {
-            // 存疑，多线程访问时爆数组越界
-            try {
-                sb.deleteCharAt(sb.length() - 1);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+            sb.deleteCharAt(sb.length() - 1);
         }
         sb.append("]");
         return sb.toString();
@@ -88,12 +83,7 @@ public class VectorInfo {
             if (originDoc.toJson() != null) sb.append((String) originDoc.get("vector").toString()+",");
         }
         if (sb.length() > 1) {
-            // 存疑，多线程访问时爆数组越界
-            try {
-                sb.deleteCharAt(sb.length() - 1);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+            sb.deleteCharAt(sb.length() - 1);
         }
         sb.append("]");
         return sb.toString();

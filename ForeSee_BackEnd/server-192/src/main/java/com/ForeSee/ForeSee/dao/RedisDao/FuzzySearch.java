@@ -15,6 +15,7 @@ import java.util.Iterator;
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -48,11 +49,7 @@ class FuzzySearch {
                 if (db == 2) list.add(jedis.get(key));
                 else list.addAll(jedis.smembers(key));
             }
-        }else {
-            // log.info("redis没有查到，返回"+list.toString());
-            return list;
         }
-        // log.info("redis模糊查找:"+query+",返回"+list.toString());
         jedis.close();
         jedis = null;
         return list;
@@ -67,7 +64,7 @@ class FuzzySearch {
         String pattern=query.trim().replaceAll("\\s+","*");
         pattern="*" + pattern + "*";
         List<String>res=jedisScan(pattern, db);
-        // log.info("{} 模糊匹配,size:{}",pattern, res.size());
+        // log.info("{} 模糊匹配,size:{}, db: {}",pattern, res.size(), db);
         return res;
     }
 
@@ -79,20 +76,9 @@ class FuzzySearch {
     private List<String> jedisScan(String pattern, int db){
         Jedis jedis= jedisUtil.getClient();
         jedis.select(db);
-        String cursor = ScanParams.SCAN_POINTER_START;
         List<String> keys = new ArrayList<>();
-        ScanParams scanParams = new ScanParams();
-        scanParams.match(pattern);
-        scanParams.count(10000);
-        while (true){
-            //使用scan命令获取数据，使用cursor游标记录位置，下次循环使用
-            ScanResult<String> scanResult = jedis.scan(cursor, scanParams);
-            cursor = scanResult.getCursor();// 返回0 说明遍历完成
-            keys = scanResult.getResult();
-            if ("0".equals(cursor)){
-                break;
-            }
-        }
+        Set<String> set = jedis.keys(pattern);  
+        keys.addAll(set);
         jedis.close();
         jedis = null;
         return keys;

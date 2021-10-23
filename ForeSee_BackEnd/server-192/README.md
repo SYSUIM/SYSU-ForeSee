@@ -75,3 +75,11 @@ eureka:
     # 运行在192.168.1.103:8288的微服务实例springcloud-foresee-8288被注册到222上的服务注册中心
     # 可以通过222上的路由网关发现该微服务实例，并将请求转发给该实例
 ```
+
+
+python模块
+
+/data/prj2020/EnterpriseSpider/searchEngine
+
+qu_module.py
+rank_module.py

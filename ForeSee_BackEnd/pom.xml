@@ -36,13 +36,11 @@
             <dependency>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-dependencies</artifactId>
-                <!-- <version>2.3.9.RELEASE</version> -->
                 <version>2.2.2.RELEASE</version>
                 <!--<version>2.1.4.RELEASE</version>-->
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
-            
             <!-- spring-cloud的一些重要组件 -->
             <dependency>
                 <groupId>org.springframework.cloud</groupId>
@@ -52,7 +50,6 @@
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
-            
             <!-- 测试组件 -->
             <dependency>
                 <groupId>junit</groupId>
@@ -72,7 +69,6 @@
                 <version>${lombok.version}</version>
                 <optional>true</optional>
             </dependency>
-
         </dependencies>
     </dependencyManagement>
 <!--各模块分别添加maven插件,父项目clean+install-->

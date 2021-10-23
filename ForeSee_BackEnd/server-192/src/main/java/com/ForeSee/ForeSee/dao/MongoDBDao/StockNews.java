@@ -82,11 +82,9 @@ public class StockNews {
             @Override
             public Object transform(Object o) {
                 return Integer.valueOf(o.toString());
-                
             }
         }, idList);
-        cursor = collection.find(in("news_id", idList))
-                    .limit(pageSize).iterator();
+        cursor = collection.find(in("news_id", idList)).iterator();
         while (cursor.hasNext()) {
             Document originDoc = cursor.next();
             stockCodes.add((String)originDoc.get("stock_code"));
@@ -116,16 +114,14 @@ public class StockNews {
                 
             }
         }, idList);
+        Iterator<Integer> it = idList.iterator();
         collection = client.getDatabase("ForeSee").getCollection(tableName);
         collectionTmp = client.getDatabase("ForeSee").getCollection("companyInfo");
-        cursor = collection.find(in("news_id", idList))
-                .sort(Sorts.descending("date"))
-                .iterator();
         String head="{\"page\": "+page+",\"totalRecords\":"+totalRecords+",\"news\": [";
         sb = new StringBuilder(head);
         try {
-            while (cursor.hasNext()) {
-                Document originDoc = cursor.next();
+            while (it.hasNext()) {
+                Document originDoc = collection.find(in("news_id", it.next())).first();
                 Document companyDoc = collectionTmp.find(eq("companyInfo.stock_code", originDoc.get("stock_code"))).first();
                 originDoc.remove("_id");
                 originDoc.remove("stock_code");
